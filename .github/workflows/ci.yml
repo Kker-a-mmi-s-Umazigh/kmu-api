@@ -23,6 +23,12 @@ jobs:
       DB_NAME: ${{ secrets.DB_TEST_NAME }}
       DB_USER: ${{ secrets.DB_TEST_USER }}
       DB_PASSWORD: ${{ secrets.DB_TEST_PASSWORD }}
+      PEPPER: ${{ secrets.PEPPER }}
+      KEYLEN: ${{ secrets.KEYLEN }}
+      ITERATIONS: ${{ secrets.ITERATIONS }}
+      DIGEST: ${{ secrets.DIGEST }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      REFRESH_JWT_SECRET: ${{ secrets.REFRESH_JWT_SECRET }}
     services:
       postgres:
         image: postgres:15
