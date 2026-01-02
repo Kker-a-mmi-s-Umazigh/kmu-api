@@ -1,0 +1,722 @@
+{
+  "artists": [
+    {
+      "id": "artist-idir",
+      "name": "Yidir",
+      "origin": "Aït Lahcène, At Yenni",
+      "country": "Algérie",
+      "description": "Chanteur kabyle majeur de renommée internationale.",
+      "photoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjnhsLJbGIxekugQqXuRXt81GZ5ZOOErDWJ1ZcbRaa7FM2aMLwJap2rYK3mRQDzlL4cYK_4qme7ptWkKB-ZSfrEQ1Hxi2TU6sko_QiNE4N&s=10"
+    },
+    {
+      "id": "artist-ait-menguellet",
+      "name": "Lewnis At Mengellat",
+      "origin": "Ighil n Wammas",
+      "country": "Algérie",
+      "description": "Auteur-compositeur-interprète kabyle, reconnu pour ses textes poétiques.",
+      "photoUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Lounis_A%C3%AFt_Menguellet.jpg"
+    },
+    {
+      "id": "artist-takfarinas",
+      "name": "Takfarinas",
+      "origin": "Tixeraine, Birkhadem",
+      "country": "Algérie",
+      "description": "Chanteur kabyle moderne, popularisateur de la mandole amplifiée.",
+      "photoUrl": "https://kabylemag.com/wp-content/uploads/2025/08/Takfarinas.jpg"
+    },
+    {
+      "id": "artist-lounes-matoub",
+      "name": "Lwennas Meɛṭub",
+      "origin": "Taourirt Moussa",
+      "country": "Algérie",
+      "description": "Chanteur et poète kabyle engagé.",
+      "photoUrl": "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTF-eAqXovDAQH8xki8j2rGVh9W0CSyJImfUGOdvMUftt9wnwaxdCrDSDBmFjWXCqRCAfNqc6RVr7mVnH8"
+    },
+    {
+      "id": "artist-slimane-azem",
+      "name": "Sliman Ɛezem",
+      "origin": "Agni n Yeɣran",
+      "country": "Algérie",
+      "description": "Figure historique de la chanson kabyle, associée à la diaspora.",
+      "photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Azem.jpg/250px-Azem.jpg"
+    },
+    {
+      "id": "artist-cherif-kheddam",
+      "name": "Crif Xeddam",
+      "origin": "Taddert n Umessaoud, Iferhounene",
+      "country": "Algérie",
+      "description": "Compositeur et musicologue kabyle.",
+      "photoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS78A84yHIiqDUY33kL2TKFYYGrdK6dBRD_Ew&s"
+    },
+    {
+      "id": "artist-akli-yahiatene",
+      "name": "Akli Yahiatene",
+      "origin": "At-Mendes, Buɣni",
+      "country": "Algérie",
+      "description": "Chanteur kabyle populaire.",
+      "photoUrl": "https://upload.wikimedia.org/wikipedia/commons/d/da/Akli_Yahyaten.jpg"
+    },
+    {
+      "id": "artist-djamel-allam",
+      "name": "Ǧamal Ɛellam",
+      "origin": "Ilmaten",
+      "country": "Algérie",
+      "description": "Chanteur kabyle, connu pour des titres emblématiques.",
+      "photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Djamel_Allam.jpg/250px-Djamel_Allam.jpg"
+    },
+    {
+      "id": "artist-ferhat-mehenni",
+      "name": "Ferḥat Mhenni",
+      "origin": "Illulen Umalu",
+      "country": "Algérie",
+      "description": "Chanteur kabyle et militant politique/culturel.",
+      "photoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSG8NEA61ys-E5ro3rD_ogo5-GA1Ncplp-c5A&s"
+    },
+    {
+      "id": "artist-malika-domrane",
+      "name": "Malika Dumṛan",
+      "origin": "At Maḥmud, Tagemmunt Ɛezzuz",
+      "country": "Algérie",
+      "description": "Chanteuse kabyle, figure féminine importante de la chanson amazighe.",
+      "photoUrl": "https://media.ouest-france.fr/v1/pictures/MjAxMzA5ZWE0ZWYyMmMwMDI5N2IyYzc4NjcyZjk5YzFiZWNmNWM?width=1260&height=708&focuspoint=50%2C25&cropresize=1&client_id=bpeditorial&sign=aaebdbbf52a5f8b18a92cc2d6b03ef6f121f72a211a9cdb99975964df8f1ee6a"
+    },
+    {
+      "id": "artist-nouara",
+      "name": "Nouara",
+      "origin": "Azazga",
+      "country": "Algérie",
+      "description": "Chanteuse kabyle.",
+      "photoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPByPL2msomdFGPyiy4LeOky0yM0T03Y68Zw&s"
+    },
+    {
+      "id": "artist-massa-bouchafa",
+      "name": "Massa Bouchafa",
+      "origin": "At Yeliten, Iferhounene",
+      "country": "Algérie",
+      "description": "Chanteuse kabyle.",
+      "photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Massa_Bouchafa.jpg/250px-Massa_Bouchafa.jpg"
+    },
+    {
+      "id": "artist-cherif-hamani",
+      "name": "Crif Hamani",
+      "origin": "At Maḥmud, Tagemmunt Ɛezzuz",
+      "country": "Algérie",
+      "description": "Chanteur kabyle.",
+      "photoUrl": "https://www.horizons.dz/wp-content/uploads/2023/10/hamani.jpg"
+    },
+    {
+      "id": "artist-rabah-asma",
+      "name": "Rabeḥ Ɛeṣma",
+      "origin": "Redjaouna",
+      "country": "Algérie",
+      "description": "Auteur-compositeur-interprète kabyle.",
+      "photoUrl": "https://tamurt.info/wp-content/uploads/2023/02/Ravah-Asma.jpg"
+    },
+    {
+      "id": "artist-oulahlou",
+      "name": "Ulaḥlu",
+      "origin": "Iɣil Ɛli",
+      "country": "Algérie",
+      "description": "Chanteur kabyle engagé.",
+      "photoUrl": "https://tamurt.info/wp-content/uploads/2018/06/Oulahlou-lors-du-lhommage-a-Matoub-au-Bataclan.jpg"
+    },
+    {
+      "id": "artist-ali-amran",
+      "name": "Ɛli Ɛemṛan",
+      "origin": "Ivetṛunen, Mɛetqa",
+      "country": "Algérie",
+      "description": "Chanteur kabyle contemporain.",
+      "photoUrl": "https://static.actu.fr/uploads/2020/01/2020-01-25-ali-amran-7-20191016-162251.jpeg"
+    },
+    {
+      "id": "artist-djurdjura",
+      "name": "Djurdjura",
+      "origin": "Kabylie",
+      "country": "Algérie",
+      "description": "Groupe vocal féminin kabyle.",
+      "photoUrl": "https://upload.wikimedia.org/wikipedia/commons/5/50/Groupe_Djurdjura_%28Kabylie_Alg%C3%A9rie%29.jpg"
+    },
+    {
+      "id": "artist-les-abranis",
+      "name": "Les Abranis",
+      "origin": "Kabylie / diaspora",
+      "country": "Algérie",
+      "description": "Groupe kabyle (rock/folk) historique.",
+      "photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Abranis_%28Groupe_kabyle-Alg%C3%A9rie%29.jpg/330px-Abranis_%28Groupe_kabyle-Alg%C3%A9rie%29.jpg"
+    }
+  ],
+  "albums": [
+    {
+      "id": "album-idir-a-vava-inouva-1991",
+      "title": "A Vava Inouva",
+      "releaseYear": 1991,
+      "label": "Globe Music",
+      "coverUrl": "https://i1.sndcdn.com/artworks-000132752015-c4h3py-t1080x1080.jpg",
+      "primaryArtistId": "artist-idir"
+    },
+    {
+      "id": "album-idir-identites-1999",
+      "title": "Identités",
+      "releaseYear": 1999,
+      "label": "Universal Music",
+      "coverUrl": "https://i.scdn.co/image/ab67616d0000b273b0e57fa00d102714cdd0fdcb",
+      "primaryArtistId": "artist-idir"
+    },
+    {
+      "id": "album-ait-menguellet-ay-agu-1979",
+      "title": "Ay agu",
+      "releaseYear": 1979,
+      "label": null,
+      "coverUrl": "https://www.aitmenguellet.net/nanosop/2021/06/1979-ay-agu.jpg",
+      "primaryArtistId": "artist-ait-menguellet"
+    }
+  ],
+  "songs": [
+    {
+      "id": "song-idir-a-vava-inouva",
+      "title": "A Vava Inouva",
+      "releaseYear": 1991,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-isefra",
+      "title": "Isefra",
+      "releaseYear": 1991,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-ssendu",
+      "title": "Ssendu (Voie Lactée)",
+      "releaseYear": 1991,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-azger",
+      "title": "Azger",
+      "releaseYear": 1991,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-muqley",
+      "title": "Muqley",
+      "releaseYear": 1991,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-zwit-rwit",
+      "title": "Zwit Rwit",
+      "releaseYear": 1991,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-cfigh",
+      "title": "Cfiɣ",
+      "releaseYear": 1991,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-azwaw",
+      "title": "Azwaw",
+      "releaseYear": 1991,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-tagrawla",
+      "title": "Tagrawla",
+      "releaseYear": 1991,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-tighri-b-ugdud",
+      "title": "Tiɣri b ugdud",
+      "releaseYear": 1991,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-acawi",
+      "title": "Acawi",
+      "releaseYear": 1991,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-ay-arrac-nnegh",
+      "title": "Ay Arrac Nneɣ",
+      "releaseYear": 1991,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-ctedughi",
+      "title": "Cteduɣi",
+      "releaseYear": 1991,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-izumal",
+      "title": "Izumal",
+      "releaseYear": 1991,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-lmut",
+      "title": "L'Mut",
+      "releaseYear": 1991,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-w-ibghun",
+      "title": "W' Ibɣun",
+      "releaseYear": 1991,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-aghrib",
+      "title": "Aɣrib",
+      "releaseYear": 1991,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-avava-inouva-2",
+      "title": "A Vava Inouva 2",
+      "releaseYear": 1999,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": "album_track (duo/feat selon édition)",
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-a-tulawin",
+      "title": "A tulawin (Une algérienne debout)",
+      "releaseYear": 1999,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-un-homme-qui-na-pas-de-frere",
+      "title": "Un homme qui n'a pas de frère...",
+      "releaseYear": 1999,
+      "languageCode": "fr",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-exil",
+      "title": "Exil (Daɣrib)",
+      "releaseYear": 1999,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-tizi-ouzou",
+      "title": "Tizi Ouzou",
+      "releaseYear": 1999,
+      "languageCode": "fr",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-revolution-tagrawla-2",
+      "title": "Révolution (Tagrawla 2)",
+      "releaseYear": 1999,
+      "languageCode": "fr",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-fable-tamachahuts-2",
+      "title": "Fable (Tamaçahuts 2)",
+      "releaseYear": 1999,
+      "languageCode": "fr",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-illusions-awah-awah-2",
+      "title": "Illusions (Awah Awah 2)",
+      "releaseYear": 1999,
+      "languageCode": "fr",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-le-jour-du-don-tiwizi-2",
+      "title": "Le jour du don (Tiwizi 2)",
+      "releaseYear": 1999,
+      "languageCode": "fr",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-idir-memoires",
+      "title": "Mémoires",
+      "releaseYear": 1999,
+      "languageCode": "fr",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-ait-menguellet-ay-agu",
+      "title": "Ay agu",
+      "releaseYear": 1979,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-ait-menguellet-d-nnuva-k-freh",
+      "title": "D nnuva-k freh",
+      "releaseYear": 1979,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-ait-menguellet-argu-yi",
+      "title": "Arğu-Yi",
+      "releaseYear": 1979,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-ait-menguellet-idul-sanga-nruh",
+      "title": "Idul sanga nruh",
+      "releaseYear": 1979,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    },
+    {
+      "id": "song-ait-menguellet-tawriqt",
+      "title": "Tawriqt",
+      "releaseYear": 1979,
+      "languageCode": "kab",
+      "isPublished": true,
+      "description": null,
+      "createdBy": null
+    }
+  ],
+  "albumTracks": [
+    {
+      "id": "trk-avava-01",
+      "albumId": "album-idir-a-vava-inouva-1991",
+      "songId": "song-idir-a-vava-inouva",
+      "discNumber": 1,
+      "trackNumber": 1,
+      "isBonus": false
+    },
+    {
+      "id": "trk-avava-02",
+      "albumId": "album-idir-a-vava-inouva-1991",
+      "songId": "song-idir-isefra",
+      "discNumber": 1,
+      "trackNumber": 2,
+      "isBonus": false
+    },
+    {
+      "id": "trk-avava-03",
+      "albumId": "album-idir-a-vava-inouva-1991",
+      "songId": "song-idir-ssendu",
+      "discNumber": 1,
+      "trackNumber": 3,
+      "isBonus": false
+    },
+    {
+      "id": "trk-avava-04",
+      "albumId": "album-idir-a-vava-inouva-1991",
+      "songId": "song-idir-azger",
+      "discNumber": 1,
+      "trackNumber": 4,
+      "isBonus": false
+    },
+    {
+      "id": "trk-avava-05",
+      "albumId": "album-idir-a-vava-inouva-1991",
+      "songId": "song-idir-muqley",
+      "discNumber": 1,
+      "trackNumber": 5,
+      "isBonus": false
+    },
+    {
+      "id": "trk-avava-06",
+      "albumId": "album-idir-a-vava-inouva-1991",
+      "songId": "song-idir-zwit-rwit",
+      "discNumber": 1,
+      "trackNumber": 6,
+      "isBonus": false
+    },
+    {
+      "id": "trk-avava-07",
+      "albumId": "album-idir-a-vava-inouva-1991",
+      "songId": "song-idir-cfigh",
+      "discNumber": 1,
+      "trackNumber": 7,
+      "isBonus": false
+    },
+    {
+      "id": "trk-avava-08",
+      "albumId": "album-idir-a-vava-inouva-1991",
+      "songId": "song-idir-azwaw",
+      "discNumber": 1,
+      "trackNumber": 8,
+      "isBonus": false
+    },
+    {
+      "id": "trk-avava-09",
+      "albumId": "album-idir-a-vava-inouva-1991",
+      "songId": "song-idir-tagrawla",
+      "discNumber": 1,
+      "trackNumber": 9,
+      "isBonus": false
+    },
+    {
+      "id": "trk-avava-10",
+      "albumId": "album-idir-a-vava-inouva-1991",
+      "songId": "song-idir-tighri-b-ugdud",
+      "discNumber": 1,
+      "trackNumber": 10,
+      "isBonus": false
+    },
+    {
+      "id": "trk-avava-11",
+      "albumId": "album-idir-a-vava-inouva-1991",
+      "songId": "song-idir-acawi",
+      "discNumber": 1,
+      "trackNumber": 11,
+      "isBonus": false
+    },
+    {
+      "id": "trk-avava-12",
+      "albumId": "album-idir-a-vava-inouva-1991",
+      "songId": "song-idir-ay-arrac-nnegh",
+      "discNumber": 1,
+      "trackNumber": 12,
+      "isBonus": false
+    },
+    {
+      "id": "trk-avava-13",
+      "albumId": "album-idir-a-vava-inouva-1991",
+      "songId": "song-idir-ctedughi",
+      "discNumber": 1,
+      "trackNumber": 13,
+      "isBonus": false
+    },
+    {
+      "id": "trk-avava-14",
+      "albumId": "album-idir-a-vava-inouva-1991",
+      "songId": "song-idir-izumal",
+      "discNumber": 1,
+      "trackNumber": 14,
+      "isBonus": false
+    },
+    {
+      "id": "trk-avava-15",
+      "albumId": "album-idir-a-vava-inouva-1991",
+      "songId": "song-idir-lmut",
+      "discNumber": 1,
+      "trackNumber": 15,
+      "isBonus": false
+    },
+    {
+      "id": "trk-avava-16",
+      "albumId": "album-idir-a-vava-inouva-1991",
+      "songId": "song-idir-w-ibghun",
+      "discNumber": 1,
+      "trackNumber": 16,
+      "isBonus": false
+    },
+    {
+      "id": "trk-avava-17",
+      "albumId": "album-idir-a-vava-inouva-1991",
+      "songId": "song-idir-aghrib",
+      "discNumber": 1,
+      "trackNumber": 17,
+      "isBonus": false
+    },
+    {
+      "id": "trk-ident-01",
+      "albumId": "album-idir-identites-1999",
+      "songId": "song-idir-avava-inouva-2",
+      "discNumber": 1,
+      "trackNumber": 1,
+      "isBonus": false
+    },
+    {
+      "id": "trk-ident-02",
+      "albumId": "album-idir-identites-1999",
+      "songId": "song-idir-a-tulawin",
+      "discNumber": 1,
+      "trackNumber": 2,
+      "isBonus": false
+    },
+    {
+      "id": "trk-ident-03",
+      "albumId": "album-idir-identites-1999",
+      "songId": "song-idir-un-homme-qui-na-pas-de-frere",
+      "discNumber": 1,
+      "trackNumber": 3,
+      "isBonus": false
+    },
+    {
+      "id": "trk-ident-04",
+      "albumId": "album-idir-identites-1999",
+      "songId": "song-idir-exil",
+      "discNumber": 1,
+      "trackNumber": 4,
+      "isBonus": false
+    },
+    {
+      "id": "trk-ident-05",
+      "albumId": "album-idir-identites-1999",
+      "songId": "song-idir-tizi-ouzou",
+      "discNumber": 1,
+      "trackNumber": 5,
+      "isBonus": false
+    },
+    {
+      "id": "trk-ident-06",
+      "albumId": "album-idir-identites-1999",
+      "songId": "song-idir-revolution-tagrawla-2",
+      "discNumber": 1,
+      "trackNumber": 6,
+      "isBonus": false
+    },
+    {
+      "id": "trk-ident-07",
+      "albumId": "album-idir-identites-1999",
+      "songId": "song-idir-fable-tamachahuts-2",
+      "discNumber": 1,
+      "trackNumber": 7,
+      "isBonus": false
+    },
+    {
+      "id": "trk-ident-08",
+      "albumId": "album-idir-identites-1999",
+      "songId": "song-idir-illusions-awah-awah-2",
+      "discNumber": 1,
+      "trackNumber": 8,
+      "isBonus": false
+    },
+    {
+      "id": "trk-ident-09",
+      "albumId": "album-idir-identites-1999",
+      "songId": "song-idir-le-jour-du-don-tiwizi-2",
+      "discNumber": 1,
+      "trackNumber": 9,
+      "isBonus": false
+    },
+    {
+      "id": "trk-ident-10",
+      "albumId": "album-idir-identites-1999",
+      "songId": "song-idir-memoires",
+      "discNumber": 1,
+      "trackNumber": 10,
+      "isBonus": false
+    },
+    {
+      "id": "trk-ayagu-01",
+      "albumId": "album-ait-menguellet-ay-agu-1979",
+      "songId": "song-ait-menguellet-ay-agu",
+      "discNumber": 1,
+      "trackNumber": 1,
+      "isBonus": false
+    },
+    {
+      "id": "trk-ayagu-02",
+      "albumId": "album-ait-menguellet-ay-agu-1979",
+      "songId": "song-ait-menguellet-d-nnuva-k-freh",
+      "discNumber": 1,
+      "trackNumber": 2,
+      "isBonus": false
+    },
+    {
+      "id": "trk-ayagu-03",
+      "albumId": "album-ait-menguellet-ay-agu-1979",
+      "songId": "song-ait-menguellet-argu-yi",
+      "discNumber": 1,
+      "trackNumber": 3,
+      "isBonus": false
+    },
+    {
+      "id": "trk-ayagu-04",
+      "albumId": "album-ait-menguellet-ay-agu-1979",
+      "songId": "song-ait-menguellet-idul-sanga-nruh",
+      "discNumber": 1,
+      "trackNumber": 4,
+      "isBonus": false
+    },
+    {
+      "id": "trk-ayagu-05",
+      "albumId": "album-ait-menguellet-ay-agu-1979",
+      "songId": "song-ait-menguellet-tawriqt",
+      "discNumber": 1,
+      "trackNumber": 5,
+      "isBonus": false
+    }
+  ]
+}
