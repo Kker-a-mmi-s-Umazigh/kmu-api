@@ -1,9 +1,9 @@
-import { BaseModel } from "./BaseModel.js"
-import { User } from "./User.js"
+import { BaseModel } from "./BaseModel.js";
+import { User } from "./User.js";
 
 export class RefreshToken extends BaseModel {
-  static tableName = "refreshTokens"
-  static idColumn = "id"
+  static tableName = "refreshTokens";
+  static idColumn = "id";
 
   static jsonSchema = {
     type: "object",
@@ -16,7 +16,7 @@ export class RefreshToken extends BaseModel {
       createdAt: { type: "string", format: "date-time" },
       userId: { type: "string", format: "uuid" },
     },
-  }
+  };
 
   static relationMappings = () => ({
     user: {
@@ -24,5 +24,5 @@ export class RefreshToken extends BaseModel {
       modelClass: User,
       join: { from: "refreshTokens.userId", to: "users.id" },
     },
-  })
+  });
 }

@@ -3,6 +3,7 @@
 Base URL: `/api`
 
 General notes:
+
 - Auth header: `Authorization: Bearer <accessToken>` for protected routes.
 - Moderation: for non-moderators, `POST/PUT/DELETE` on moderated resources returns `202` with a moderation request, no direct write.
 - Comments are not moderated (direct write), but can be reported.
@@ -11,6 +12,7 @@ General notes:
 - List endpoints are paginated: `page` (1-based), `pageSize` (max 200). Aliases: `limit`, `perPage`. Response is `{ items, pagination }`.
 
 Response pattern for moderated writes (202):
+
 ```json
 {
   "status": "pending",
@@ -19,6 +21,7 @@ Response pattern for moderated writes (202):
   "changes": [{ "...": "moderationChanges row" }]
 }
 ```
+
 `change` is returned for single-change requests. `changes` is returned for multi-change requests (ex: song + artists + sources).
 
 ## Auth

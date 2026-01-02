@@ -1,10 +1,10 @@
-import Knex from "knex"
-import { Model } from "objection"
-import config from "../config/db.js"
+import Knex from "knex";
+import { Model } from "objection";
+import config from "../config/db.js";
 
-const environment = process.env.NODE_ENV || "development"
-const knex = Knex(config[environment])
+const environment = process.env.NODE_ENV || "development";
+const knex = Knex(config[environment]);
 
-Model.knex(knex)
+Model.knex(knex);
 
-export default knex
+export default knex;

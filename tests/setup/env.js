@@ -1,5 +1,5 @@
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 
-process.env.NODE_ENV = process.env.NODE_ENV || "test"
+process.env.NODE_ENV = process.env.NODE_ENV || "test";
 
-dotenv.config({ path: ".env.test" })
+dotenv.config({ path: ".env.test" });

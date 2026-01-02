@@ -1,4 +1,4 @@
-import { normalizeAnnotationPayload } from "../../../src/utils/annotationPayload.js"
+import { normalizeAnnotationPayload } from "../../../src/utils/annotationPayload.js";
 
 describe("normalizeAnnotationPayload", () => {
   it("maps text and index fields to normalized shape", () => {
@@ -11,7 +11,7 @@ describe("normalizeAnnotationPayload", () => {
       endCharIndex: 9,
       startLine: 3,
       endLine: 4,
-    })
+    });
 
     expect(payload).toEqual({
       id: "anno-1",
@@ -22,8 +22,8 @@ describe("normalizeAnnotationPayload", () => {
       endChar: 9,
       startLine: 3,
       endLine: 4,
-    })
-  })
+    });
+  });
 
   it("prefers explicit text fields over bodyMd and indexes", () => {
     const payload = normalizeAnnotationPayload({
@@ -33,14 +33,14 @@ describe("normalizeAnnotationPayload", () => {
       startCharIndex: 8,
       endChar: 4,
       endCharIndex: 9,
-    })
+    });
 
     expect(payload).toEqual({
       bodyMd: "override",
       startChar: 8,
       endChar: 9,
-    })
-  })
+    });
+  });
 
   it("applies defaults for lines when requested", () => {
     const payload = normalizeAnnotationPayload(
@@ -49,12 +49,12 @@ describe("normalizeAnnotationPayload", () => {
         startLine: null,
       },
       { applyDefaults: true },
-    )
+    );
 
     expect(payload).toEqual({
       bodyMd: "line defaults",
       startLine: 0,
       endLine: 0,
-    })
-  })
-})
+    });
+  });
+});

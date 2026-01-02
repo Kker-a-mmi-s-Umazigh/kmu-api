@@ -1,12 +1,12 @@
-import { BaseModel } from "./BaseModel.js"
-import { Song } from "./Song.js"
-import { Language } from "./Language.js"
-import { User } from "./User.js"
-import { TranslationLine } from "./TranslationLine.js"
+import { BaseModel } from "./BaseModel.js";
+import { Song } from "./Song.js";
+import { Language } from "./Language.js";
+import { User } from "./User.js";
+import { TranslationLine } from "./TranslationLine.js";
 
 export class Translation extends BaseModel {
-  static tableName = "translations"
-  static idColumn = "id"
+  static tableName = "translations";
+  static idColumn = "id";
 
   static relationMappings = () => ({
     song: {
@@ -29,5 +29,5 @@ export class Translation extends BaseModel {
       modelClass: TranslationLine,
       join: { from: "translations.id", to: "translationLines.translationId" },
     },
-  })
+  });
 }

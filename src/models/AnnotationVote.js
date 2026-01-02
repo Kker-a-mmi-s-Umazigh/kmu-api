@@ -1,9 +1,9 @@
-import { BaseModel } from "./BaseModel.js"
-import { User } from "./User.js"
-import { Annotation } from "./Annotation.js"
+import { BaseModel } from "./BaseModel.js";
+import { User } from "./User.js";
+import { Annotation } from "./Annotation.js";
 export class AnnotationVote extends BaseModel {
-  static tableName = "annotationVotes"
-  static idColumn = ["userId", "annotationId"]
+  static tableName = "annotationVotes";
+  static idColumn = ["userId", "annotationId"];
 
   static relationMappings = () => ({
     user: {
@@ -16,5 +16,5 @@ export class AnnotationVote extends BaseModel {
       modelClass: Annotation,
       join: { from: "annotationVotes.annotationId", to: "annotations.id" },
     },
-  })
+  });
 }

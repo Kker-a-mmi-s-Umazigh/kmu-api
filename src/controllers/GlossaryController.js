@@ -1,8 +1,8 @@
-import { GlossaryTerm } from "../models/GlossaryTerm.js"
-import { makeBaseController } from "./baseController.js"
+import { GlossaryTerm } from "../models/GlossaryTerm.js";
+import { makeBaseController } from "./baseController.js";
 
-const allowedCreateFields = ["term", "languageCode", "notes", "createdAt"]
-const allowedUpdateFields = ["term", "notes"]
+const allowedCreateFields = ["term", "languageCode", "notes", "createdAt"];
+const allowedUpdateFields = ["term", "notes"];
 
 export const GlossaryController = {
   ...makeBaseController(GlossaryTerm, {
@@ -12,7 +12,7 @@ export const GlossaryController = {
 
   getFullTerm: async (req, res) => {
     try {
-      const { id } = req.params
+      const { id } = req.params;
       const term = await GlossaryTerm.query().findById(id).withGraphFetched(`
           [
             language,
@@ -22,14 +22,14 @@ export const GlossaryController = {
               meaning
             ]
           ]
-        `)
+        `);
 
-      if (!term) return res.status(404).json({ error: "Not found" })
+      if (!term) return res.status(404).json({ error: "Not found" });
 
-      res.json(term)
+      res.json(term);
     } catch (err) {
-      console.error(err)
-      res.status(500).json({ error: "Internal error" })
+      console.error(err);
+      res.status(500).json({ error: "Internal error" });
     }
   },
-}
+};

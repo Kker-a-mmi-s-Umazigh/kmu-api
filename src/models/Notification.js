@@ -1,8 +1,8 @@
-import { BaseModel } from "./BaseModel.js"
-import { User } from "./User.js"
+import { BaseModel } from "./BaseModel.js";
+import { User } from "./User.js";
 export class Notification extends BaseModel {
-  static tableName = "notifications"
-  static idColumn = "id"
+  static tableName = "notifications";
+  static idColumn = "id";
 
   static relationMappings = () => ({
     user: {
@@ -10,5 +10,5 @@ export class Notification extends BaseModel {
       modelClass: User,
       join: { from: "notifications.userId", to: "users.id" },
     },
-  })
+  });
 }

@@ -1,10 +1,10 @@
-import { BaseModel } from "./BaseModel.js"
-import { Song } from "./Song.js"
-import { User } from "./User.js"
-import { AnnotationComment } from "./AnnotationComment.js"
+import { BaseModel } from "./BaseModel.js";
+import { Song } from "./Song.js";
+import { User } from "./User.js";
+import { AnnotationComment } from "./AnnotationComment.js";
 export class Annotation extends BaseModel {
-  static tableName = "annotations"
-  static idColumn = "id"
+  static tableName = "annotations";
+  static idColumn = "id";
 
   static relationMappings = () => ({
     song: {
@@ -34,5 +34,5 @@ export class Annotation extends BaseModel {
         to: "users.id",
       },
     },
-  })
+  });
 }

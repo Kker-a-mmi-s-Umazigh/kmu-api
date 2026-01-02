@@ -1,10 +1,10 @@
-import { BaseModel } from "./BaseModel.js"
-import { Song } from "./Song.js"
-import { TranslationLine } from "./TranslationLine.js"
-import { GlossaryTermLyricLine } from "./GlossaryTermLyricLine.js"
+import { BaseModel } from "./BaseModel.js";
+import { Song } from "./Song.js";
+import { TranslationLine } from "./TranslationLine.js";
+import { GlossaryTermLyricLine } from "./GlossaryTermLyricLine.js";
 export class LyricLine extends BaseModel {
-  static tableName = "lyricLines"
-  static idColumn = "id"
+  static tableName = "lyricLines";
+  static idColumn = "id";
 
   static relationMappings = () => ({
     song: {
@@ -22,5 +22,5 @@ export class LyricLine extends BaseModel {
       modelClass: GlossaryTermLyricLine,
       join: { from: "lyricLines.id", to: "glossaryTermLyricLines.lyricLineId" },
     },
-  })
+  });
 }

@@ -1,11 +1,11 @@
-import { BaseModel } from "./BaseModel.js"
-import { Artist } from "./Artist.js"
-import { AlbumTrack } from "./AlbumTrack.js"
-import { Song } from "./Song.js"
+import { BaseModel } from "./BaseModel.js";
+import { Artist } from "./Artist.js";
+import { AlbumTrack } from "./AlbumTrack.js";
+import { Song } from "./Song.js";
 
 export class Album extends BaseModel {
-  static tableName = "albums"
-  static idColumn = "id"
+  static tableName = "albums";
+  static idColumn = "id";
 
   static jsonSchema = {
     type: "object",
@@ -19,7 +19,7 @@ export class Album extends BaseModel {
       createdAt: { type: "string", format: "date-time" },
       primaryArtistId: { type: ["string", "null"], format: "uuid" },
     },
-  }
+  };
 
   static relationMappings = () => ({
     primaryArtist: {
@@ -45,5 +45,5 @@ export class Album extends BaseModel {
         to: "songs.id",
       },
     },
-  })
+  });
 }

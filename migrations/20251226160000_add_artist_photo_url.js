@@ -4,9 +4,9 @@
  */
 export const up = async (knex) => {
   await knex.schema.alterTable("artists", (t) => {
-    t.text("photoUrl")
-  })
-}
+    t.text("photoUrl");
+  });
+};
 
 /**
  * @param { import("knex").Knex } knex
@@ -14,6 +14,6 @@ export const up = async (knex) => {
  */
 export const down = async (knex) => {
   await knex.schema.alterTable("artists", (t) => {
-    t.dropColumn("photoUrl")
-  })
-}
+    t.dropColumn("photoUrl");
+  });
+};

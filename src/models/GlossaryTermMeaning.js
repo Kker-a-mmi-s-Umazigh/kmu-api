@@ -1,8 +1,8 @@
-import { BaseModel } from "./BaseModel.js"
-import { GlossaryTerm } from "./GlossaryTerm.js"
+import { BaseModel } from "./BaseModel.js";
+import { GlossaryTerm } from "./GlossaryTerm.js";
 export class GlossaryTermMeaning extends BaseModel {
-  static tableName = "glossaryTermMeanings"
-  static idColumn = "id"
+  static tableName = "glossaryTermMeanings";
+  static idColumn = "id";
 
   static relationMappings = () => ({
     term: {
@@ -10,5 +10,5 @@ export class GlossaryTermMeaning extends BaseModel {
       modelClass: GlossaryTerm,
       join: { from: "glossaryTermMeanings.termId", to: "glossaryTerms.id" },
     },
-  })
+  });
 }

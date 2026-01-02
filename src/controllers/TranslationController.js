@@ -1,5 +1,5 @@
-import { Translation } from "../models/Translation.js"
-import { makeBaseController } from "./baseController.js"
+import { Translation } from "../models/Translation.js";
+import { makeBaseController } from "./baseController.js";
 
 const allowedCreateFields = [
   "songId",
@@ -7,9 +7,9 @@ const allowedCreateFields = [
   "createdBy",
   "isApproved",
   "notes",
-]
+];
 
-const allowedUpdateFields = ["isApproved", "notes"]
+const allowedUpdateFields = ["isApproved", "notes"];
 
 export const TranslationController = {
   ...makeBaseController(Translation, {
@@ -19,7 +19,7 @@ export const TranslationController = {
 
   getFullTranslation: async (req, res) => {
     try {
-      const { id } = req.params
+      const { id } = req.params;
       const tr = await Translation.query()
         .findById(id)
         .withGraphFetched(
@@ -34,16 +34,16 @@ export const TranslationController = {
         )
         .modifiers({
           selectUsername(builder) {
-            builder.select("id", "username")
+            builder.select("id", "username");
           },
-        })
+        });
 
-      if (!tr) return res.status(404).json({ error: "Not found" })
+      if (!tr) return res.status(404).json({ error: "Not found" });
 
-      res.json(tr)
+      res.json(tr);
     } catch (err) {
-      console.error(err)
-      res.status(500).json({ error: "Internal error" })
+      console.error(err);
+      res.status(500).json({ error: "Internal error" });
     }
   },
-}
+};

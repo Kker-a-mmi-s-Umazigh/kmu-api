@@ -1,9 +1,9 @@
-import { BaseModel } from "./BaseModel.js"
-import { Annotation } from "./Annotation.js"
-import { User } from "./User.js"
+import { BaseModel } from "./BaseModel.js";
+import { Annotation } from "./Annotation.js";
+import { User } from "./User.js";
 export class AnnotationComment extends BaseModel {
-  static tableName = "annotationComments"
-  static idColumn = "id"
+  static tableName = "annotationComments";
+  static idColumn = "id";
 
   static relationMappings = () => ({
     annotation: {
@@ -32,5 +32,5 @@ export class AnnotationComment extends BaseModel {
         to: "annotationComments.parentCommentId",
       },
     },
-  })
+  });
 }

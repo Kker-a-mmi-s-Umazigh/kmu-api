@@ -1,16 +1,16 @@
-import { BaseModel } from "./BaseModel.js"
-import { Role } from "./Role.js"
-import { RefreshToken } from "./RefreshToken.js"
-import { Annotation } from "./Annotation.js"
-import { AnnotationComment } from "./AnnotationComment.js"
-import { Notification } from "./Notification.js"
-import { Report } from "./Report.js"
-import { Song } from "./Song.js"
-import { Translation } from "./Translation.js"
+import { BaseModel } from "./BaseModel.js";
+import { Role } from "./Role.js";
+import { RefreshToken } from "./RefreshToken.js";
+import { Annotation } from "./Annotation.js";
+import { AnnotationComment } from "./AnnotationComment.js";
+import { Notification } from "./Notification.js";
+import { Report } from "./Report.js";
+import { Song } from "./Song.js";
+import { Translation } from "./Translation.js";
 
 export class User extends BaseModel {
-  static tableName = "users"
-  static idColumn = "id"
+  static tableName = "users";
+  static idColumn = "id";
 
   static jsonSchema = {
     type: "object",
@@ -40,7 +40,7 @@ export class User extends BaseModel {
       createdAt: { type: "string", format: "date-time" },
       roleId: { type: "string", format: "uuid" },
     },
-  }
+  };
 
   static relationMappings = () => ({
     role: {
@@ -112,5 +112,5 @@ export class User extends BaseModel {
       modelClass: Song,
       join: { from: "users.id", to: "songs.createdBy" },
     },
-  })
+  });
 }

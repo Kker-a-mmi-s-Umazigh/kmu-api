@@ -1,9 +1,9 @@
-import { BaseModel } from "./BaseModel.js"
-import { User } from "./User.js"
-import { Song } from "./Song.js"
+import { BaseModel } from "./BaseModel.js";
+import { User } from "./User.js";
+import { Song } from "./Song.js";
 export class FavoriteSong extends BaseModel {
-  static tableName = "favoriteSongs"
-  static idColumn = ["userId", "songId"]
+  static tableName = "favoriteSongs";
+  static idColumn = ["userId", "songId"];
 
   static relationMappings = () => ({
     user: {
@@ -16,5 +16,5 @@ export class FavoriteSong extends BaseModel {
       modelClass: Song,
       join: { from: "favoriteSongs.songId", to: "songs.id" },
     },
-  })
+  });
 }

@@ -1,9 +1,9 @@
-import { BaseModel } from "./BaseModel.js"
-import { Song } from "./Song.js"
+import { BaseModel } from "./BaseModel.js";
+import { Song } from "./Song.js";
 
 export class LyricSection extends BaseModel {
-  static tableName = "lyricSections"
-  static idColumn = "id"
+  static tableName = "lyricSections";
+  static idColumn = "id";
 
   static relationMappings = () => ({
     song: {
@@ -11,5 +11,5 @@ export class LyricSection extends BaseModel {
       modelClass: Song,
       join: { from: "lyricSections.songId", to: "songs.id" },
     },
-  })
+  });
 }

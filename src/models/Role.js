@@ -1,9 +1,9 @@
-import { BaseModel } from "./BaseModel.js"
-import { User } from "./User.js"
+import { BaseModel } from "./BaseModel.js";
+import { User } from "./User.js";
 
 export class Role extends BaseModel {
-  static tableName = "roles"
-  static idColumn = "id"
+  static tableName = "roles";
+  static idColumn = "id";
 
   static jsonSchema = {
     type: "object",
@@ -12,7 +12,7 @@ export class Role extends BaseModel {
       id: { type: "string", format: "uuid" },
       name: { type: "string" },
     },
-  }
+  };
 
   static relationMappings = () => ({
     users: {
@@ -20,5 +20,5 @@ export class Role extends BaseModel {
       modelClass: User,
       join: { from: "roles.id", to: "users.roleId" },
     },
-  })
+  });
 }

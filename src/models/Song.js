@@ -1,17 +1,17 @@
-import { BaseModel } from "./BaseModel.js"
-import { Language } from "./Language.js"
-import { User } from "./User.js"
-import { SongSource } from "./SongSource.js"
-import { LyricLine } from "./LyricLine.js"
-import { LyricSection } from "./LyricSection.js"
-import { Translation } from "./Translation.js"
-import { Annotation } from "./Annotation.js"
-import { Artist } from "./Artist.js"
-import { Album } from "./Album.js"
+import { BaseModel } from "./BaseModel.js";
+import { Language } from "./Language.js";
+import { User } from "./User.js";
+import { SongSource } from "./SongSource.js";
+import { LyricLine } from "./LyricLine.js";
+import { LyricSection } from "./LyricSection.js";
+import { Translation } from "./Translation.js";
+import { Annotation } from "./Annotation.js";
+import { Artist } from "./Artist.js";
+import { Album } from "./Album.js";
 
 export class Song extends BaseModel {
-  static tableName = "songs"
-  static idColumn = "id"
+  static tableName = "songs";
+  static idColumn = "id";
 
   static jsonSchema = {
     type: "object",
@@ -27,7 +27,7 @@ export class Song extends BaseModel {
       languageCode: { type: "string" },
       createdBy: { type: ["string", "null"], format: "uuid" },
     },
-  }
+  };
 
   static relationMappings = () => ({
     language: {
@@ -103,5 +103,5 @@ export class Song extends BaseModel {
         to: "users.id",
       },
     },
-  })
+  });
 }

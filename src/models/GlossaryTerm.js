@@ -1,10 +1,10 @@
-import { BaseModel } from "./BaseModel.js"
-import { Language } from "./Language.js"
-import { GlossaryTermMeaning } from "./GlossaryTermMeaning.js"
-import { GlossaryTermLyricLine } from "./GlossaryTermLyricLine.js"
+import { BaseModel } from "./BaseModel.js";
+import { Language } from "./Language.js";
+import { GlossaryTermMeaning } from "./GlossaryTermMeaning.js";
+import { GlossaryTermLyricLine } from "./GlossaryTermLyricLine.js";
 export class GlossaryTerm extends BaseModel {
-  static tableName = "glossaryTerms"
-  static idColumn = "id"
+  static tableName = "glossaryTerms";
+  static idColumn = "id";
 
   static relationMappings = () => ({
     language: {
@@ -22,5 +22,5 @@ export class GlossaryTerm extends BaseModel {
       modelClass: GlossaryTermLyricLine,
       join: { from: "glossaryTerms.id", to: "glossaryTermLyricLines.termId" },
     },
-  })
+  });
 }

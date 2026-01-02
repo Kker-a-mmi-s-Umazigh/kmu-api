@@ -1,11 +1,11 @@
-import { BaseModel } from "./BaseModel.js"
-import { Song } from "./Song.js"
-import { Translation } from "./Translation.js"
-import { GlossaryTerm } from "./GlossaryTerm.js"
+import { BaseModel } from "./BaseModel.js";
+import { Song } from "./Song.js";
+import { Translation } from "./Translation.js";
+import { GlossaryTerm } from "./GlossaryTerm.js";
 
 export class Language extends BaseModel {
-  static tableName = "languages"
-  static idColumn = "code"
+  static tableName = "languages";
+  static idColumn = "code";
 
   static jsonSchema = {
     type: "object",
@@ -16,7 +16,7 @@ export class Language extends BaseModel {
       nativeName: { type: ["string", "null"] },
       createdAt: { type: "string", format: "date-time" },
     },
-  }
+  };
 
   static relationMappings = () => ({
     songs: {
@@ -34,5 +34,5 @@ export class Language extends BaseModel {
       modelClass: GlossaryTerm,
       join: { from: "languages.code", to: "glossaryTerms.languageCode" },
     },
-  })
+  });
 }

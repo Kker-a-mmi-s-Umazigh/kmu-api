@@ -15,7 +15,7 @@ services:
     depends_on:
       - db-kmu-app
     expose:
-      - '3000'
+      - "3000"
     volumes:
       - .:/app
       - /app/node_modules
@@ -31,7 +31,7 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - '5434:5432'
+      - "5434:5432"
     networks:
       - kmu-network
     volumes:
@@ -46,7 +46,7 @@ services:
       POSTGRES_USER: postgres_test
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - '5436:5432'
+      - "5436:5432"
     networks:
       - kmu-network
     volumes:

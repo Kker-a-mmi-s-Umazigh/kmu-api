@@ -1,9 +1,9 @@
-import { BaseModel } from "./BaseModel.js"
-import { Song } from "./Song.js"
-import { Artist } from "./Artist.js"
+import { BaseModel } from "./BaseModel.js";
+import { Song } from "./Song.js";
+import { Artist } from "./Artist.js";
 export class SongArtist extends BaseModel {
-  static tableName = "songArtists"
-  static idColumn = ["artistId", "songId"] // PK composite
+  static tableName = "songArtists";
+  static idColumn = ["artistId", "songId"]; // PK composite
 
   static relationMappings = () => ({
     song: {
@@ -16,5 +16,5 @@ export class SongArtist extends BaseModel {
       modelClass: Artist,
       join: { from: "songArtists.artistId", to: "artists.id" },
     },
-  })
+  });
 }

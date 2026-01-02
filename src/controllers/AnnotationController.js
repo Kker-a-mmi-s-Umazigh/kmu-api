@@ -1,6 +1,6 @@
-import { Annotation } from "../models/Annotation.js"
-import { makeBaseController } from "./baseController.js"
-import { normalizeAnnotationPayload } from "../utils/annotationPayload.js"
+import { Annotation } from "../models/Annotation.js";
+import { makeBaseController } from "./baseController.js";
+import { normalizeAnnotationPayload } from "../utils/annotationPayload.js";
 
 const allowedCreateFields = [
   "songId",
@@ -13,7 +13,7 @@ const allowedCreateFields = [
   "endChar",
   "startLine",
   "endLine",
-]
+];
 const allowedUpdateFields = [
   "text",
   "bodyMd",
@@ -23,7 +23,7 @@ const allowedUpdateFields = [
   "endChar",
   "startLine",
   "endLine",
-]
+];
 
 export const AnnotationController = {
   ...makeBaseController(Annotation, {
@@ -37,7 +37,7 @@ export const AnnotationController = {
 
   getFullAnnotation: async (req, res) => {
     try {
-      const { id } = req.params
+      const { id } = req.params;
       const ann = await Annotation.query()
         .findById(id)
         .withGraphFetched(
@@ -51,16 +51,16 @@ export const AnnotationController = {
         )
         .modifiers({
           selectUsername(builder) {
-            builder.select("id", "username")
+            builder.select("id", "username");
           },
-        })
+        });
 
-      if (!ann) return res.status(404).json({ error: "Not found" })
+      if (!ann) return res.status(404).json({ error: "Not found" });
 
-      res.json(ann)
+      res.json(ann);
     } catch (err) {
-      console.error(err)
-      res.status(500).json({ error: "Internal error" })
+      console.error(err);
+      res.status(500).json({ error: "Internal error" });
     }
   },
-}
+};

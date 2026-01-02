@@ -1,17 +1,18 @@
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 
-dotenv.config({ path: `.env.${process.env.NODE_ENV || "development"}` })
+dotenv.config({ path: `.env.${process.env.NODE_ENV || "development"}` });
 
 const buildConnection = () => {
-  const sslEnabled = process.env.DB_SSL === "true" || process.env.DB_SSL === "1"
-  const sslConfig = sslEnabled ? { rejectUnauthorized: false } : undefined
-  const databaseUrl = process.env.DATABASE_URL
+  const sslEnabled =
+    process.env.DB_SSL === "true" || process.env.DB_SSL === "1";
+  const sslConfig = sslEnabled ? { rejectUnauthorized: false } : undefined;
+  const databaseUrl = process.env.DATABASE_URL;
 
   if (databaseUrl) {
     return {
       connectionString: databaseUrl,
       ssl: sslConfig,
-    }
+    };
   }
 
   return {
@@ -21,8 +22,8 @@ const buildConnection = () => {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     ...(sslConfig ? { ssl: sslConfig } : {}),
-  }
-}
+  };
+};
 
 const config = {
   development: {
@@ -70,6 +71,6 @@ const config = {
     accessExpiresIn: process.env.ACCESS_TOKEN_EXPIRATION || "15m",
     refreshExpiresIn: process.env.REFRESH_TOKEN_EXPIRATION || "7d",
   },
-}
+};
 
-export default config
+export default config;
