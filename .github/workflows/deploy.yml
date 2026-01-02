@@ -33,7 +33,7 @@ jobs:
 
       - name: Run migrations (Supabase)
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DIRECT_DATABASE_URL }}
           DB_SSL: "true"
           NODE_ENV: production
           NODE_OPTIONS: --dns-result-order=ipv4first
