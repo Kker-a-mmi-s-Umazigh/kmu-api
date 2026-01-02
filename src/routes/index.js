@@ -14,6 +14,14 @@ import reportsRoutes from "./reports.routes.js";
 
 const router = Router();
 
+router.get("/", (req, res) => {
+  res.status(200).json({ status: "ok", service: "kmu-api", scope: "api" });
+});
+
+router.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 router.use("/users", usersRoutes);
 router.use("/auth", authRoutes);
 router.use("/songs", songsRoutes);

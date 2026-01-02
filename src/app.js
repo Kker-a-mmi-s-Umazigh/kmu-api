@@ -41,6 +41,10 @@ if (process.env.NODE_ENV !== "test") {
   app.use(requestLogger);
 }
 
+app.get("/", (req, res) => {
+  res.status(200).json({ status: "ok", service: "kmu-api" });
+});
+
 app.use("/api", apiRouter);
 
 app.use((err, req, res, next) => {
