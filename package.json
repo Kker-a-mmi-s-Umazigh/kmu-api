@@ -8,7 +8,7 @@
     "start": "node src/server.js",
     "test": "cross-env NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
     "migrate:latest": "cross-env NODE_ENV=production node scripts/migrate.js",
-    "lint": "eslint src",
+    "lint": "eslint src --fix",
     "lint:fix": "eslint src --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
