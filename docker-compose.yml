@@ -1,0 +1,61 @@
+services:
+  kmu-api:
+    build: .
+    container_name: kmu-api
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=db-kmu-app
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      - db-kmu-app
+    expose:
+      - '3000'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - kmu-network
+
+  db-kmu-app:
+    image: postgres:15
+    container_name: db-kmu-app
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - '5434:5432'
+    networks:
+      - kmu-network
+    volumes:
+      - postgres_kmu_data:/var/lib/postgresql/data
+
+  db-kmu-test:
+    image: postgres:15
+    container_name: db-kmu-test
+    restart: always
+    environment:
+      POSTGRES_DB: kmu_app_test_db
+      POSTGRES_USER: postgres_test
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - '5436:5432'
+    networks:
+      - kmu-network
+    volumes:
+      - postgres_kmu_test_data:/var/lib/postgresql/data
+
+networks:
+  kmu-network:
+    driver: bridge
+
+volumes:
+  postgres_kmu_data:
+  postgres_kmu_test_data:
