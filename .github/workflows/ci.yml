@@ -16,13 +16,20 @@ permissions:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5436
+      DB_NAME: ${{ secrets.DB_TEST_NAME }}
+      DB_USER: ${{ secrets.DB_TEST_USER }}
+      DB_PASSWORD: ${{ secrets.DB_TEST_PASSWORD }}
     services:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_DB: kmu_app_test_db
-          POSTGRES_USER: postgres_test
-          POSTGRES_PASSWORD: azerty93
+          POSTGRES_DB: ${{ secrets.DB_TEST_NAME }}
+          POSTGRES_USER: ${{ secrets.DB_TEST_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_TEST_PASSWORD }}
         ports:
           - 5436:5432
         options: >-
