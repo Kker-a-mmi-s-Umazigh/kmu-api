@@ -1,6 +1,6 @@
 // src/routes/auth.routes.js
 import { Router } from "express";
-import { AuthController } from "../controllers/AuthController.js";
+import { AuthController } from "../controllers/authController.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { authLimiter, refreshLimiter } from "../middleware/rateLimiters.js";
 
