@@ -36,6 +36,7 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DB_SSL: "true"
           NODE_ENV: production
+          NODE_OPTIONS: --dns-result-order=ipv4first
         run: npm run migrate:latest
 
       - name: Install Vercel CLI
