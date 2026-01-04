@@ -40,4 +40,27 @@ describe("UserController", () => {
 
     expect(res.status).toBe(409);
   });
+
+  it("blocks non-admin from updating other users", async () => {
+    const memberA = await signupMember();
+    const memberB = await signupMember();
+
+    const res = await request(app)
+      .put(`/api/users/${memberB.user.id}`)
+      .set("Authorization", `Bearer ${memberA.token}`)
+      .send({ displayName: "Nope" });
+
+    expect(res.status).toBe(403);
+  });
+
+  it("blocks role updates for non-admin self update", async () => {
+    const member = await signupMember();
+
+    const res = await request(app)
+      .put(`/api/users/${member.user.id}`)
+      .set("Authorization", `Bearer ${member.token}`)
+      .send({ roleId: "00000000-0000-0000-0000-000000000000" });
+
+    expect(res.status).toBe(403);
+  });
 });

@@ -388,8 +388,17 @@ export const UserController = {
   update: async (req, res) => {
     const requestedId = req.params?.id;
     const currentUserId = req.user?.userId;
+    const isAdmin = currentUserId
+      ? await moderationService.isAdmin(currentUserId)
+      : false;
+    const wantsRoleChange =
+      req.body && Object.prototype.hasOwnProperty.call(req.body, "roleId");
 
     if (currentUserId && requestedId && currentUserId === requestedId) {
+      if (wantsRoleChange) {
+        return res.status(403).json({ error: "Admin role required" });
+      }
+
       let data = pickFields(req.body, allowedSelfFields);
       try {
         data = normalizeIdentityFields(data);
@@ -429,6 +438,10 @@ export const UserController = {
           .status(400)
           .json({ error: "Invalid data", details: err.message });
       }
+    }
+
+    if (!isAdmin) {
+      return res.status(403).json({ error: "Admin role required" });
     }
 
     try {
