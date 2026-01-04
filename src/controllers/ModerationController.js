@@ -16,9 +16,7 @@ const attachUserRefs = async (requests) => {
     return requests;
   }
 
-  const users = await User.query()
-    .select("id", "username")
-    .whereIn("id", ids);
+  const users = await User.query().select("id", "username").whereIn("id", ids);
   const userMap = new Map(
     users.map((user) => [user.id, { id: user.id, username: user.username }]),
   );

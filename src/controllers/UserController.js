@@ -283,9 +283,9 @@ const fetchActivityItems = async ({ userId, limit, offset }) => {
       : null,
     text:
       row.type === "annotation"
-        ? annotationMap.get(row.entityId) ?? null
+        ? (annotationMap.get(row.entityId) ?? null)
         : row.type === "translation"
-          ? translationLinesMap.get(row.entityId) ?? []
+          ? (translationLinesMap.get(row.entityId) ?? [])
           : null,
     translation:
       row.type === "translation"
