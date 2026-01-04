@@ -98,46 +98,59 @@ const buildModerationActivityItems = async ({
   includePending,
   limit = 50,
 }) => {
-  const query = ModerationChange.query()
+  const requestQuery = ModerationRequest.query()
     .select(
-      "moderationChanges.id",
-      "moderationChanges.requestId",
-      "moderationChanges.targetTable",
-      "moderationChanges.operation",
-      "moderationChanges.targetKey",
-      "moderationChanges.dataNew",
-      "moderationChanges.dataOld",
-      "moderationChanges.createdAt",
+      "moderationRequests.id",
       "moderationRequests.status",
+      "moderationRequests.createdAt",
       "moderationRequests.reviewedAt",
       "moderationRequests.appliedAt",
-    )
-    .join(
-      "moderationRequests",
-      "moderationChanges.requestId",
-      "moderationRequests.id",
+      "moderationRequests.decisionNote",
     )
     .where("moderationRequests.createdBy", userId)
-    .orderBy("moderationChanges.createdAt", "desc")
+    .orderBy("moderationRequests.createdAt", "desc")
     .limit(limit);
 
   if (!includePending) {
-    query.whereNot("moderationRequests.status", "pending");
+    requestQuery.whereNot("moderationRequests.status", "pending");
   }
 
-  const rows = await query;
-  return rows.map((row) => ({
-    id: row.id,
-    requestId: row.requestId,
-    scope: row.targetTable,
-    operation: row.operation,
-    targetKey: row.targetKey,
-    dataNew: row.dataNew,
-    dataOld: row.dataOld,
-    status: row.status,
-    createdAt: row.createdAt,
-    reviewedAt: row.reviewedAt,
-    appliedAt: row.appliedAt,
+  const requests = await requestQuery;
+  if (!requests.length) return [];
+
+  const requestIds = requests.map((request) => request.id);
+  const changes = await ModerationChange.query()
+    .whereIn("requestId", requestIds)
+    .orderBy([
+      { column: "sequence", order: "asc" },
+      { column: "createdAt", order: "asc" },
+    ]);
+
+  const changesMap = new Map();
+  for (const change of changes) {
+    if (!changesMap.has(change.requestId)) {
+      changesMap.set(change.requestId, []);
+    }
+    changesMap.get(change.requestId).push({
+      id: change.id,
+      requestId: change.requestId,
+      scope: change.targetTable,
+      operation: change.operation,
+      targetKey: change.targetKey,
+      dataNew: change.dataNew,
+      dataOld: change.dataOld,
+      createdAt: change.createdAt,
+    });
+  }
+
+  return requests.map((request) => ({
+    requestId: request.id,
+    status: request.status,
+    decisionNote: request.decisionNote ?? null,
+    createdAt: request.createdAt,
+    reviewedAt: request.reviewedAt,
+    appliedAt: request.appliedAt,
+    changes: changesMap.get(request.id) ?? [],
   }));
 };
 
@@ -155,7 +168,7 @@ const buildActivityUnion = (userId) => {
   const annotationsQuery = knex("annotations")
     .select(
       knex.raw("'annotation' as type"),
-      "id",
+      knex.raw('"id"::text as id'),
       "id as entityId",
       "songId",
       "createdAt",
@@ -165,7 +178,7 @@ const buildActivityUnion = (userId) => {
   const translationsQuery = knex("translations")
     .select(
       knex.raw("'translation' as type"),
-      "id",
+      knex.raw('"id"::text as id'),
       "id as entityId",
       "songId",
       "createdAt",
@@ -182,18 +195,109 @@ const fetchActivityItems = async ({ userId, limit, offset }) => {
   if (!userId) return [];
   const unionQuery = buildActivityUnion(userId).as("activity_items");
   const rows = await knex
-    .select("*")
+    .select(
+      "activity_items.id",
+      "activity_items.type",
+      "activity_items.entityId",
+      "activity_items.createdAt",
+      "songs.id as songId",
+      "songs.title as songTitle",
+      "songs.releaseYear as songReleaseYear",
+      "songs.isPublished as songIsPublished",
+      "songs.languageCode as songLanguageCode",
+    )
     .from(unionQuery)
-    .orderBy("createdAt", "desc")
+    .leftJoin("songs", "activity_items.songId", "songs.id")
+    .orderBy("activity_items.createdAt", "desc")
     .limit(limit)
     .offset(offset);
+
+  const annotationIds = [];
+  const translationIds = [];
+  for (const row of rows) {
+    if (row.type === "annotation") {
+      annotationIds.push(row.entityId);
+    } else if (row.type === "translation") {
+      translationIds.push(row.entityId);
+    }
+  }
+
+  const [annotationRows, translationRows, translationLines] = await Promise.all(
+    [
+      annotationIds.length
+        ? knex("annotations")
+            .select("id", "bodyMd")
+            .whereIn("id", annotationIds)
+        : Promise.resolve([]),
+      translationIds.length
+        ? knex("translations")
+            .select("id", "titleTrans", "notes", "languageCode")
+            .whereIn("id", translationIds)
+        : Promise.resolve([]),
+      translationIds.length
+        ? knex("translationLines")
+            .select("translationId", "lineIndex", "text")
+            .whereIn("translationId", translationIds)
+            .orderBy(["translationId", { column: "lineIndex", order: "asc" }])
+        : Promise.resolve([]),
+    ],
+  );
+
+  const annotationMap = new Map(
+    annotationRows.map((row) => [row.id, row.bodyMd ?? null]),
+  );
+
+  const translationBaseMap = new Map();
+  for (const row of translationRows) {
+    translationBaseMap.set(row.id, {
+      titleTrans: row.titleTrans ?? null,
+      notes: row.notes ?? null,
+      languageCode: row.languageCode ?? null,
+    });
+  }
+
+  const translationLinesMap = new Map();
+  for (const row of translationLines) {
+    if (!translationLinesMap.has(row.translationId)) {
+      translationLinesMap.set(row.translationId, []);
+    }
+    translationLinesMap.get(row.translationId).push({
+      lineIndex: row.lineIndex,
+      text: row.text,
+    });
+  }
 
   return rows.map((row) => ({
     id: row.id,
     type: row.type,
     entityId: row.entityId,
-    songId: row.songId,
     createdAt: row.createdAt,
+    song: row.songId
+      ? {
+          id: row.songId,
+          title: row.songTitle,
+          releaseYear: row.songReleaseYear,
+          isPublished: row.songIsPublished,
+          languageCode: row.songLanguageCode,
+        }
+      : null,
+    text:
+      row.type === "annotation"
+        ? annotationMap.get(row.entityId) ?? null
+        : row.type === "translation"
+          ? translationLinesMap.get(row.entityId) ?? []
+          : null,
+    translation:
+      row.type === "translation"
+        ? {
+            ...(translationBaseMap.get(row.entityId) ?? {
+              titleTrans: null,
+              notes: null,
+              languageCode: null,
+            }),
+            text: translationLinesMap.get(row.entityId) ?? [],
+          }
+        : null,
   }));
 };
 
