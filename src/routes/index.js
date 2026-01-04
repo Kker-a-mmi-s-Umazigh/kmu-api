@@ -11,6 +11,7 @@ import authRoutes from "./auth.routes.js";
 import moderationRoutes from "./moderation.routes.js";
 import annotationCommentsRoutes from "./annotationComments.routes.js";
 import reportsRoutes from "./reports.routes.js";
+import versionsRoutes from "./versions.routes.js";
 
 const router = Router();
 
@@ -33,5 +34,6 @@ router.use("/annotation-comments", annotationCommentsRoutes);
 router.use("/glossary", glossaryRoutes);
 router.use("/reports", reportsRoutes);
 router.use("/moderation", moderationRoutes);
+router.use("/versions", versionsRoutes);
 
 export default router;

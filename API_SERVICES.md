@@ -194,6 +194,20 @@ Response pattern for moderated writes (202):
 - DELETE `/glossary/:id`
   - Auth required
 
+## App Versions
+
+- GET `/versions`
+- GET `/versions/latest`
+- GET `/versions/:id`
+- POST `/versions`
+  - Auth + admin required
+  - Body (create): `version`, `notes`, `isRequired`
+- PUT `/versions/:id`
+  - Auth + admin required
+  - Body (update): `version`, `notes`, `isRequired`
+- DELETE `/versions/:id`
+  - Auth + admin required
+
 ## Reports
 
 - GET `/reports`
