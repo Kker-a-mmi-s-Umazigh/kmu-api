@@ -27,6 +27,7 @@ describe("UserController", () => {
 
     expect(res.status).toBe(200);
     expect(res.body.id).toBe(admin.id);
+    expect(Array.isArray(res.body.activities.moderationItems)).toBe(true);
   });
 
   it("rejects duplicate email updates", async () => {

@@ -91,6 +91,54 @@ const buildModerationActivity = (counts, includePending) => {
   };
 };
 
+const buildModerationActivityItems = async ({
+  userId,
+  includePending,
+  limit = 50,
+}) => {
+  const query = ModerationChange.query()
+    .select(
+      "moderationChanges.id",
+      "moderationChanges.requestId",
+      "moderationChanges.targetTable",
+      "moderationChanges.operation",
+      "moderationChanges.targetKey",
+      "moderationChanges.dataNew",
+      "moderationChanges.dataOld",
+      "moderationChanges.createdAt",
+      "moderationRequests.status",
+      "moderationRequests.reviewedAt",
+      "moderationRequests.appliedAt",
+    )
+    .join(
+      "moderationRequests",
+      "moderationChanges.requestId",
+      "moderationRequests.id",
+    )
+    .where("moderationRequests.createdBy", userId)
+    .orderBy("moderationChanges.createdAt", "desc")
+    .limit(limit);
+
+  if (!includePending) {
+    query.whereNot("moderationRequests.status", "pending");
+  }
+
+  const rows = await query;
+  return rows.map((row) => ({
+    id: row.id,
+    requestId: row.requestId,
+    scope: row.targetTable,
+    operation: row.operation,
+    targetKey: row.targetKey,
+    dataNew: row.dataNew,
+    dataOld: row.dataOld,
+    status: row.status,
+    createdAt: row.createdAt,
+    reviewedAt: row.reviewedAt,
+    appliedAt: row.appliedAt,
+  }));
+};
+
 const buildActivities = (userId, maps) => ({
   favorites: maps.favorites.get(userId) ?? 0,
   annotations: maps.annotations.get(userId) ?? 0,
@@ -271,6 +319,7 @@ export const UserController = {
         annotationsCount,
         translationsCount,
         moderationRows,
+        moderationItems,
         history,
       ] = await Promise.all([
         countRows(FavoriteSong.query().where("userId", id)),
@@ -281,6 +330,7 @@ export const UserController = {
           .count({ count: "*" })
           .where("createdBy", id)
           .groupBy("createdBy", "status"),
+        buildModerationActivityItems({ userId: id, includePending }),
         moderationService.getHistoryForTarget({
           tableName: User.tableName,
           targetKey: { id },
@@ -300,6 +350,7 @@ export const UserController = {
           annotations: annotationsCount,
           translations: translationsCount,
           moderation: buildModerationActivity(moderationCounts, includePending),
+          moderationItems,
         },
         moderationHistory: history,
       });
@@ -338,6 +389,7 @@ export const UserController = {
         annotationsCount,
         translationsCount,
         moderationRows,
+        moderationItems,
       ] = await Promise.all([
         countRows(FavoriteSong.query().where("userId", id)),
         countRows(Annotation.query().where("createdBy", id)),
@@ -347,6 +399,7 @@ export const UserController = {
           .count({ count: "*" })
           .where("createdBy", id)
           .groupBy("createdBy", "status"),
+        buildModerationActivityItems({ userId: id, includePending }),
       ]);
 
       const moderationCounts =
@@ -375,6 +428,7 @@ export const UserController = {
           annotations: annotationsCount,
           translations: translationsCount,
           moderation: buildModerationActivity(moderationCounts, includePending),
+          moderationItems,
         },
       };
 

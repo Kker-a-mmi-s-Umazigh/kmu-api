@@ -57,6 +57,7 @@ Response pattern for moderated writes (202):
 - GET `/users/:id`
   - Response includes `activities` counts: `favorites`, `annotations`, `translations`.
   - `activities.moderation` includes counts by status. `pending` is shown only for the current user (token).
+  - `activities.moderationItems` includes recent moderation changes created by the user.
 - GET `/users/:id/full`
 - POST `/users`
   - Auth + moderator required
