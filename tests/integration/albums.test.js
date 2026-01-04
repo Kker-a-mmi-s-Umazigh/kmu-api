@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../../src/app.js";
-import { getSeededAlbum } from "./helpers.js";
+import { getSeededAlbum, getSeededArtist, loginAsAdmin } from "./helpers.js";
 
 describe("AlbumController", () => {
   it("lists albums", async () => {
@@ -15,5 +15,21 @@ describe("AlbumController", () => {
 
     expect(res.status).toBe(200);
     expect(res.body.id).toBe(album.id);
+  });
+
+  it("rejects invalid coverUrl on create", async () => {
+    const adminToken = await loginAsAdmin();
+    const artist = await getSeededArtist();
+
+    const res = await request(app)
+      .post("/api/albums")
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({
+        title: "Bad Url Album",
+        primaryArtistId: artist.id,
+        coverUrl: "javascript:alert(1)",
+      });
+
+    expect(res.status).toBe(400);
   });
 });

@@ -6,6 +6,7 @@ import {
 } from "../utils/albumQueries.js";
 import { moderationService } from "../services/moderationService.js";
 import { normalizePagination, buildPagination } from "../utils/pagination.js";
+import { normalizeOptionalUrl } from "../utils/urlValidation.js";
 
 const allowedCreateFields = ["name", "origin", "photoUrl"];
 const allowedUpdateFields = ["name", "origin", "photoUrl"];
@@ -19,6 +20,18 @@ const normalizeArtistPayload = (body) => {
   delete data.country;
   return data;
 };
+
+const applyUrlValidation = (data, fieldName) => {
+  if (!data || typeof data !== "object") return data;
+  if (!Object.prototype.hasOwnProperty.call(data, fieldName)) return data;
+  return {
+    ...data,
+    [fieldName]: normalizeOptionalUrl(data[fieldName], fieldName),
+  };
+};
+
+const normalizeArtistInput = (body) =>
+  applyUrlValidation(normalizeArtistPayload(body), "photoUrl");
 
 const withCountryAlias = (data) => ({
   ...data,
@@ -121,12 +134,20 @@ export const ArtistController = {
   },
 
   create: async (req, res) => {
-    req.body = normalizeArtistPayload(req.body);
+    try {
+      req.body = normalizeArtistInput(req.body);
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
     return baseController.create(req, res);
   },
 
   update: async (req, res) => {
-    req.body = normalizeArtistPayload(req.body);
+    try {
+      req.body = normalizeArtistInput(req.body);
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
     return baseController.update(req, res);
   },
 };

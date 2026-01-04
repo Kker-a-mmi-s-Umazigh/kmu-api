@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../../src/app.js";
-import { getSeededArtist } from "./helpers.js";
+import { getSeededArtist, loginAsAdmin } from "./helpers.js";
 
 describe("ArtistController", () => {
   it("lists artists", async () => {
@@ -15,5 +15,18 @@ describe("ArtistController", () => {
 
     expect(res.status).toBe(200);
     expect(res.body.id).toBe(artist.id);
+  });
+
+  it("rejects invalid photoUrl on create", async () => {
+    const adminToken = await loginAsAdmin();
+    const res = await request(app)
+      .post("/api/artists")
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({
+        name: "Bad Url Artist",
+        photoUrl: "javascript:alert(1)",
+      });
+
+    expect(res.status).toBe(400);
   });
 });

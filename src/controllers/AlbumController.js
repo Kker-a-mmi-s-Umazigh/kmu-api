@@ -1,6 +1,7 @@
 import { Album } from "../models/Album.js";
 import { makeBaseController } from "./baseController.js";
 import { fetchAlbumsByArtistIds } from "../utils/albumQueries.js";
+import { normalizeOptionalUrl } from "../utils/urlValidation.js";
 
 const allowedCreateFields = [
   "title",
@@ -18,10 +19,21 @@ const allowedUpdateFields = [
   "primaryArtistId",
 ];
 
+const applyUrlValidation = (data, fieldName) => {
+  if (!data || typeof data !== "object") return data;
+  if (!Object.prototype.hasOwnProperty.call(data, fieldName)) return data;
+  return {
+    ...data,
+    [fieldName]: normalizeOptionalUrl(data[fieldName], fieldName),
+  };
+};
+
 export const AlbumController = {
   ...makeBaseController(Album, {
     allowedCreateFields,
     allowedUpdateFields,
+    transformCreateData: (data) => applyUrlValidation(data, "coverUrl"),
+    transformUpdateData: (data) => applyUrlValidation(data, "coverUrl"),
     getByIdGraph: "primaryArtist",
     serializeGetById: (row) => {
       if (!row) return row;
