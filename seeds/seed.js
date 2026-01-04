@@ -47,6 +47,7 @@ export const seed = async (knex) => {
     "favoriteSongs",
     "annotationVotes",
     "notifications",
+    "appVersions",
     "glossaryTermLyricLines",
     "glossaryTermMeanings",
     "glossaryTerms",
@@ -102,8 +103,8 @@ export const seed = async (knex) => {
 
   await knex("users").insert({
     id: adminUserId,
-    username: "admin",
-    email: "admin@kabmusic.com",
+    username: "abenmerad",
+    email: "benmerad.ali@gmail.com",
     passwordHash: hashedPassword,
     passwordSalt,
     createdAt: knex.fn.now(),

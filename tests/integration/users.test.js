@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../../src/app.js";
-import { getAdminUser, loginAsAdmin } from "./helpers.js";
+import { getAdminUser, loginAsAdmin, signupMember } from "./helpers.js";
 
 describe("UserController", () => {
   it("lists users", async () => {
@@ -16,6 +16,7 @@ describe("UserController", () => {
     expect(res.status).toBe(200);
     expect(res.body.id).toBe(admin.id);
     expect(res.body.activities).toBeTruthy();
+    expect(Array.isArray(res.body.activities.items)).toBe(true);
   });
 
   it("returns full profile details", async () => {
@@ -27,5 +28,53 @@ describe("UserController", () => {
 
     expect(res.status).toBe(200);
     expect(res.body.id).toBe(admin.id);
+    expect(Array.isArray(res.body.activities.moderationItems)).toBe(true);
+    expect(Array.isArray(res.body.activities.items)).toBe(true);
+  });
+
+  it("returns paginated activities", async () => {
+    const admin = await getAdminUser();
+    const res = await request(app).get(
+      `/api/users/${admin.id}/activities?page=1&pageSize=5`,
+    );
+
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.items)).toBe(true);
+    expect(res.body.pagination).toBeTruthy();
+  });
+
+  it("rejects duplicate email updates", async () => {
+    const memberA = await signupMember();
+    const memberB = await signupMember();
+
+    const res = await request(app)
+      .put(`/api/users/${memberA.user.id}`)
+      .set("Authorization", `Bearer ${memberA.token}`)
+      .send({ email: memberB.user.email });
+
+    expect(res.status).toBe(409);
+  });
+
+  it("blocks non-admin from updating other users", async () => {
+    const memberA = await signupMember();
+    const memberB = await signupMember();
+
+    const res = await request(app)
+      .put(`/api/users/${memberB.user.id}`)
+      .set("Authorization", `Bearer ${memberA.token}`)
+      .send({ displayName: "Nope" });
+
+    expect(res.status).toBe(403);
+  });
+
+  it("blocks role updates for non-admin self update", async () => {
+    const member = await signupMember();
+
+    const res = await request(app)
+      .put(`/api/users/${member.user.id}`)
+      .set("Authorization", `Bearer ${member.token}`)
+      .send({ roleId: "00000000-0000-0000-0000-000000000000" });
+
+    expect(res.status).toBe(403);
   });
 });

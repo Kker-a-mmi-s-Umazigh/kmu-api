@@ -57,6 +57,10 @@ Response pattern for moderated writes (202):
 - GET `/users/:id`
   - Response includes `activities` counts: `favorites`, `annotations`, `translations`.
   - `activities.moderation` includes counts by status. `pending` is shown only for the current user (token).
+  - `activities.moderationItems` includes recent moderation changes created by the user.
+  - `activities.items` includes the 5 latest activities (favorites, annotations, translations).
+- GET `/users/:id/activities`
+  - Returns paginated activity items (favorites, annotations, translations).
 - GET `/users/:id/full`
 - POST `/users`
   - Auth + moderator required
@@ -193,6 +197,20 @@ Response pattern for moderated writes (202):
   - Body (update): `term`, `notes`
 - DELETE `/glossary/:id`
   - Auth required
+
+## App Versions
+
+- GET `/versions`
+- GET `/versions/latest`
+- GET `/versions/:id`
+- POST `/versions`
+  - Auth + admin required
+  - Body (create): `version`, `notes`, `isRequired`
+- PUT `/versions/:id`
+  - Auth + admin required
+  - Body (update): `version`, `notes`, `isRequired`
+- DELETE `/versions/:id`
+  - Auth + admin required
 
 ## Reports
 

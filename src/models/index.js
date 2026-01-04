@@ -22,5 +22,6 @@ export { Notification } from "./Notification.js";
 export { Report } from "./Report.js";
 export { AnnotationVote } from "./AnnotationVote.js";
 export { FavoriteSong } from "./FavoriteSong.js";
+export { AppVersion } from "./AppVersion.js";
 export { ModerationRequest } from "./ModerationRequest.js";
 export { ModerationChange } from "./ModerationChange.js";

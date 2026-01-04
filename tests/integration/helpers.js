@@ -6,9 +6,13 @@ import knex from "../../src/config/knexClient.js";
 export const api = request(app);
 
 export const loginAsAdmin = async () => {
+  const adminUser = await getAdminUser();
+  const identifier = adminUser.username || adminUser.email;
+  const password = process.env.SEED_ADMIN_PASSWORD || "admin123";
+
   const res = await api.post("/api/auth/login").send({
-    identifier: "admin",
-    password: "admin123",
+    identifier,
+    password,
   });
 
   if (!res.body?.accessToken) {
@@ -38,7 +42,11 @@ export const signupMember = async () => {
 };
 
 export const getAdminUser = async () => {
-  const user = await knex("users").where({ username: "admin" }).first();
+  const user = await knex("users")
+    .leftJoin("roles", "users.roleId", "roles.id")
+    .select("users.*")
+    .where("roles.name", "Administrateur")
+    .first();
   if (!user) {
     throw new Error("Admin user not found");
   }

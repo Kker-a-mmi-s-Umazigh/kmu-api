@@ -27,8 +27,10 @@ const ALLOWED_TABLES = new Set([
   "reports",
   "annotationVotes",
   "favoriteSongs",
+  "appVersions",
 ]);
 
+const ADMIN_ROLE_KEYWORDS = ["admin", "administrateur"];
 const MODERATOR_ROLE_KEYWORDS = ["moderateur", "moderator", "admin"];
 
 const normalizeRoleName = (name) => {
@@ -44,6 +46,11 @@ const isModeratorRole = (roleName) => {
   return MODERATOR_ROLE_KEYWORDS.some((keyword) =>
     normalized.includes(keyword),
   );
+};
+
+const isAdminRole = (roleName) => {
+  const normalized = normalizeRoleName(roleName);
+  return ADMIN_ROLE_KEYWORDS.some((keyword) => normalized.includes(keyword));
 };
 
 const ensureAllowedTable = (tableName) => {
@@ -167,6 +174,12 @@ export const moderationService = {
     if (!userId) return false;
     const roleName = await getRoleName(userId, trx);
     return isModeratorRole(roleName);
+  },
+
+  async isAdmin(userId, trx) {
+    if (!userId) return false;
+    const roleName = await getRoleName(userId, trx);
+    return isAdminRole(roleName);
   },
 
   async submitChanges({ userId, changes }) {
