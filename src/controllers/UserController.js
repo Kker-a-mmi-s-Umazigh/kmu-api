@@ -3,6 +3,7 @@ import { FavoriteSong } from "../models/FavoriteSong.js";
 import { Annotation } from "../models/Annotation.js";
 import { Translation } from "../models/Translation.js";
 import { ModerationRequest } from "../models/ModerationRequest.js";
+import { ModerationChange } from "../models/ModerationChange.js";
 import { makeBaseController } from "./baseController.js";
 import { moderationService } from "../services/moderationService.js";
 import { normalizePagination, buildPagination } from "../utils/pagination.js";
