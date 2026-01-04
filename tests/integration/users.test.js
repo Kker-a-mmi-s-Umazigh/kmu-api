@@ -16,6 +16,7 @@ describe("UserController", () => {
     expect(res.status).toBe(200);
     expect(res.body.id).toBe(admin.id);
     expect(res.body.activities).toBeTruthy();
+    expect(Array.isArray(res.body.activities.items)).toBe(true);
   });
 
   it("returns full profile details", async () => {
@@ -28,6 +29,18 @@ describe("UserController", () => {
     expect(res.status).toBe(200);
     expect(res.body.id).toBe(admin.id);
     expect(Array.isArray(res.body.activities.moderationItems)).toBe(true);
+    expect(Array.isArray(res.body.activities.items)).toBe(true);
+  });
+
+  it("returns paginated activities", async () => {
+    const admin = await getAdminUser();
+    const res = await request(app).get(
+      `/api/users/${admin.id}/activities?page=1&pageSize=5`,
+    );
+
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.items)).toBe(true);
+    expect(res.body.pagination).toBeTruthy();
   });
 
   it("rejects duplicate email updates", async () => {

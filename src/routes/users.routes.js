@@ -7,6 +7,7 @@ const router = Router();
 
 router.get("/", UserController.getAll);
 router.get("/:id", UserController.getById);
+router.get("/:id/activities", UserController.getActivities);
 router.post("/", requireAuth, requireModerator, UserController.create);
 router.put("/:id", requireAuth, UserController.update);
 router.delete("/:id", requireAuth, UserController.remove);

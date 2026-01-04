@@ -7,6 +7,7 @@ import { ModerationChange } from "../models/ModerationChange.js";
 import { makeBaseController } from "./baseController.js";
 import { moderationService } from "../services/moderationService.js";
 import { normalizePagination, buildPagination } from "../utils/pagination.js";
+import knex from "../config/knexClient.js";
 import validator from "validator";
 
 const allowedCreateFields = [
@@ -138,6 +139,73 @@ const buildModerationActivityItems = async ({
     reviewedAt: row.reviewedAt,
     appliedAt: row.appliedAt,
   }));
+};
+
+const buildActivityUnion = (userId) => {
+  const favoritesQuery = knex("favoriteSongs")
+    .select(
+      knex.raw("'favorite' as type"),
+      knex.raw(`concat("userId", ':', "songId") as id`),
+      "songId as entityId",
+      "songId",
+      "createdAt",
+    )
+    .where("userId", userId);
+
+  const annotationsQuery = knex("annotations")
+    .select(
+      knex.raw("'annotation' as type"),
+      "id",
+      "id as entityId",
+      "songId",
+      "createdAt",
+    )
+    .where("createdBy", userId);
+
+  const translationsQuery = knex("translations")
+    .select(
+      knex.raw("'translation' as type"),
+      "id",
+      "id as entityId",
+      "songId",
+      "createdAt",
+    )
+    .where("createdBy", userId);
+
+  return knex.unionAll(
+    [favoritesQuery, annotationsQuery, translationsQuery],
+    true,
+  );
+};
+
+const fetchActivityItems = async ({ userId, limit, offset }) => {
+  if (!userId) return [];
+  const unionQuery = buildActivityUnion(userId).as("activity_items");
+  const rows = await knex
+    .select("*")
+    .from(unionQuery)
+    .orderBy("createdAt", "desc")
+    .limit(limit)
+    .offset(offset);
+
+  return rows.map((row) => ({
+    id: row.id,
+    type: row.type,
+    entityId: row.entityId,
+    songId: row.songId,
+    createdAt: row.createdAt,
+  }));
+};
+
+const countActivityItems = async (userId) => {
+  if (!userId) return 0;
+  const [favoritesCount, annotationsCount, translationsCount] =
+    await Promise.all([
+      countRows(FavoriteSong.query().where("userId", userId)),
+      countRows(Annotation.query().where("createdBy", userId)),
+      countRows(Translation.query().where("createdBy", userId)),
+    ]);
+  return favoritesCount + annotationsCount + translationsCount;
 };
 
 const buildActivities = (userId, maps) => ({
@@ -321,6 +389,7 @@ export const UserController = {
         translationsCount,
         moderationRows,
         moderationItems,
+        activityItems,
         history,
       ] = await Promise.all([
         countRows(FavoriteSong.query().where("userId", id)),
@@ -332,6 +401,7 @@ export const UserController = {
           .where("createdBy", id)
           .groupBy("createdBy", "status"),
         buildModerationActivityItems({ userId: id, includePending }),
+        fetchActivityItems({ userId: id, limit: 5, offset: 0 }),
         moderationService.getHistoryForTarget({
           tableName: User.tableName,
           targetKey: { id },
@@ -352,6 +422,7 @@ export const UserController = {
           translations: translationsCount,
           moderation: buildModerationActivity(moderationCounts, includePending),
           moderationItems,
+          items: activityItems,
         },
         moderationHistory: history,
       });
@@ -391,6 +462,7 @@ export const UserController = {
         translationsCount,
         moderationRows,
         moderationItems,
+        activityItems,
       ] = await Promise.all([
         countRows(FavoriteSong.query().where("userId", id)),
         countRows(Annotation.query().where("createdBy", id)),
@@ -401,6 +473,7 @@ export const UserController = {
           .where("createdBy", id)
           .groupBy("createdBy", "status"),
         buildModerationActivityItems({ userId: id, includePending }),
+        fetchActivityItems({ userId: id, limit: 5, offset: 0 }),
       ]);
 
       const moderationCounts =
@@ -430,10 +503,32 @@ export const UserController = {
           translations: translationsCount,
           moderation: buildModerationActivity(moderationCounts, includePending),
           moderationItems,
+          items: activityItems,
         },
       };
 
       res.json(profile);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Internal error" });
+    }
+  },
+
+  getActivities: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { page, pageSize } = normalizePagination(req.query);
+      const offset = (page - 1) * pageSize;
+
+      const [items, total] = await Promise.all([
+        fetchActivityItems({ userId: id, limit: pageSize, offset }),
+        countActivityItems(id),
+      ]);
+
+      res.json({
+        items,
+        pagination: buildPagination({ page, pageSize, total }),
+      });
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: "Internal error" });
