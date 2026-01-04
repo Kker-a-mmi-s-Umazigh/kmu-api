@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../../src/app.js";
-import { getAdminUser, loginAsAdmin } from "./helpers.js";
+import { getAdminUser, loginAsAdmin, signupMember } from "./helpers.js";
 
 describe("UserController", () => {
   it("lists users", async () => {
@@ -27,5 +27,17 @@ describe("UserController", () => {
 
     expect(res.status).toBe(200);
     expect(res.body.id).toBe(admin.id);
+  });
+
+  it("rejects duplicate email updates", async () => {
+    const memberA = await signupMember();
+    const memberB = await signupMember();
+
+    const res = await request(app)
+      .put(`/api/users/${memberA.user.id}`)
+      .set("Authorization", `Bearer ${memberA.token}`)
+      .send({ email: memberB.user.email });
+
+    expect(res.status).toBe(409);
   });
 });

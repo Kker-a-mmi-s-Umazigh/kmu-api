@@ -6,6 +6,7 @@ import { ModerationRequest } from "../models/ModerationRequest.js";
 import { makeBaseController } from "./baseController.js";
 import { moderationService } from "../services/moderationService.js";
 import { normalizePagination, buildPagination } from "../utils/pagination.js";
+import validator from "validator";
 
 const allowedCreateFields = [
   "username",
@@ -29,6 +30,15 @@ const allowedUpdateFields = [
   "passwordHash",
   "passwordSalt",
   "roleId",
+];
+
+const allowedSelfFields = [
+  "username",
+  "email",
+  "displayName",
+  "avatarUrl",
+  "bio",
+  "badges",
 ];
 
 const parseCount = (value) => {
@@ -86,6 +96,69 @@ const buildActivities = (userId, maps) => ({
   annotations: maps.annotations.get(userId) ?? 0,
   translations: maps.translations.get(userId) ?? 0,
 });
+
+const pickFields = (body, fields) => {
+  const data = {};
+  if (!body || typeof body !== "object") return data;
+  for (const key of fields) {
+    if (body[key] !== undefined) {
+      data[key] = body[key];
+    }
+  }
+  return data;
+};
+
+const normalizeIdentityFields = (data) => {
+  if (!data || typeof data !== "object") return data;
+  const normalized = { ...data };
+
+  if (Object.prototype.hasOwnProperty.call(normalized, "username")) {
+    if (typeof normalized.username !== "string") {
+      throw new Error("Invalid username");
+    }
+    const trimmed = normalized.username.trim();
+    if (!trimmed) {
+      throw new Error("Invalid username");
+    }
+    normalized.username = trimmed;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(normalized, "email")) {
+    if (
+      typeof normalized.email !== "string" ||
+      !validator.isEmail(normalized.email)
+    ) {
+      throw new Error("Invalid email");
+    }
+    const normalizedEmail = validator.normalizeEmail(normalized.email);
+    if (!normalizedEmail) {
+      throw new Error("Invalid email");
+    }
+    normalized.email = normalizedEmail;
+  }
+
+  return normalized;
+};
+
+const ensureUniqueIdentityFields = async ({ userId, username, email }) => {
+  if (username) {
+    const existing = await User.query()
+      .where("username", username)
+      .whereNot("id", userId)
+      .first();
+    if (existing) return { field: "username" };
+  }
+
+  if (email) {
+    const existing = await User.query()
+      .where("email", email)
+      .whereNot("id", userId)
+      .first();
+    if (existing) return { field: "email" };
+  }
+
+  return null;
+};
 
 const countRows = async (query) => {
   const row = await query.count({ count: "*" }).first();
@@ -317,19 +390,22 @@ export const UserController = {
     const currentUserId = req.user?.userId;
 
     if (currentUserId && requestedId && currentUserId === requestedId) {
-      const allowedSelfFields = [
-        "username",
-        "email",
-        "displayName",
-        "avatarUrl",
-        "bio",
-        "badges",
-      ];
-      const data = {};
-      for (const key of allowedSelfFields) {
-        if (req.body?.[key] !== undefined) {
-          data[key] = req.body[key];
-        }
+      let data = pickFields(req.body, allowedSelfFields);
+      try {
+        data = normalizeIdentityFields(data);
+      } catch (err) {
+        return res.status(400).json({ error: err.message });
+      }
+
+      const conflict = await ensureUniqueIdentityFields({
+        userId: requestedId,
+        username: data.username,
+        email: data.email,
+      });
+      if (conflict) {
+        return res.status(409).json({
+          error: `${conflict.field} already in use`,
+        });
       }
 
       if (Object.keys(data).length === 0) {
@@ -353,6 +429,25 @@ export const UserController = {
           .status(400)
           .json({ error: "Invalid data", details: err.message });
       }
+    }
+
+    try {
+      const normalized = normalizeIdentityFields(
+        pickFields(req.body, allowedUpdateFields),
+      );
+      const conflict = await ensureUniqueIdentityFields({
+        userId: requestedId,
+        username: normalized?.username,
+        email: normalized?.email,
+      });
+      if (conflict) {
+        return res.status(409).json({
+          error: `${conflict.field} already in use`,
+        });
+      }
+      req.body = { ...req.body, ...normalized };
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
     }
 
     return baseController.update(req, res);
