@@ -5,6 +5,7 @@ import { fetchAlbumsByArtistIds } from "../utils/albumQueries.js";
 import { normalizeOptionalUrl } from "../utils/urlValidation.js";
 import knex from "../config/knexClient.js";
 import { moderationService } from "../services/moderationService.js";
+import validator from "validator";
 
 const allowedCreateFields = [
   "title",
@@ -20,6 +21,15 @@ const allowedUpdateFields = [
   "label",
   "coverUrl",
   "primaryArtistId",
+];
+
+const allowedSongCreateFields = [
+  "title",
+  "releaseYear",
+  "isPublished",
+  "description",
+  "languageCode",
+  "createdBy",
 ];
 
 const applyUrlValidation = (data, fieldName) => {
@@ -40,6 +50,15 @@ const pickFields = (body, fields) => {
     }
   }
   return data;
+};
+
+const normalizeCreatedBy = (value, fallbackId) => {
+  if (value && typeof value === "object") {
+    const id = value.id ?? value.userId;
+    return id ?? fallbackId;
+  }
+  if (typeof value === "string") return value;
+  return fallbackId;
 };
 
 const serializeAlbum = (album) => {
@@ -70,33 +89,76 @@ const normalizeTracksInput = (body) => {
   return { provided: true, items };
 };
 
-const buildAlbumTrackRows = (items, albumId) => {
-  const rows = [];
-  const seen = new Set();
+const buildSongData = (payload, songId, userId) => {
+  if (!payload || typeof payload !== "object") {
+    return { error: "tracks[].song is required to create new songs" };
+  }
+
+  const data = pickFields(payload, allowedSongCreateFields);
+  data.id = songId;
+  data.createdBy = normalizeCreatedBy(payload.createdBy, userId);
+
+  if (!data.title || !data.languageCode) {
+    return {
+      error: "tracks[].song.title and tracks[].song.languageCode are required",
+    };
+  }
+
+  return { data };
+};
+
+const resolveAlbumTracks = async ({ items, albumId, userId }) => {
+  if (!items || items.length === 0) {
+    return { trackRows: [], songsToCreate: [] };
+  }
+
+  const trackRows = [];
+  const songIds = new Set();
+  const songPayloadById = new Map();
+  const seenTracks = new Set();
 
   for (const item of items) {
     if (!item || typeof item !== "object") {
       return { error: "tracks[] must be objects" };
     }
 
-    const songId = item.songId;
     const trackNumber = item.trackNumber;
     const discNumber = item.discNumber ?? 1;
+    const songPayload = item.song ?? null;
+    let songId = item.songId ?? songPayload?.id ?? null;
+
+    if (!songId && !songPayload) {
+      return { error: "tracks[].songId or tracks[].song is required" };
+    }
 
     if (!songId) {
-      return { error: "tracks[].songId is required" };
+      songId = crypto.randomUUID();
     }
+
+    if (!validator.isUUID(String(songId))) {
+      return { error: "tracks[].songId must be a valid UUID" };
+    }
+
+    if (songPayload && typeof songPayload !== "object") {
+      return { error: "tracks[].song must be an object" };
+    }
+
     if (trackNumber === undefined || trackNumber === null) {
       return { error: "tracks[].trackNumber is required" };
     }
 
     const key = `${discNumber}:${trackNumber}`;
-    if (seen.has(key)) {
+    if (seenTracks.has(key)) {
       return { error: "tracks[] has duplicate discNumber/trackNumber" };
     }
-    seen.add(key);
+    seenTracks.add(key);
 
-    rows.push({
+    songIds.add(songId);
+    if (songPayload) {
+      songPayloadById.set(songId, songPayload);
+    }
+
+    trackRows.push({
       id: item.id ?? crypto.randomUUID(),
       albumId,
       songId,
@@ -106,7 +168,32 @@ const buildAlbumTrackRows = (items, albumId) => {
     });
   }
 
-  return { rows };
+  const ids = Array.from(songIds);
+  const existingRows =
+    ids.length > 0 ? await knex("songs").select("id").whereIn("id", ids) : [];
+  const existingSet = new Set(existingRows.map((row) => row.id));
+
+  const songsToCreate = [];
+  for (const songId of ids) {
+    if (existingSet.has(songId)) {
+      continue;
+    }
+
+    const payload = songPayloadById.get(songId);
+    if (!payload) {
+      return {
+        error: "tracks[].songId does not exist; provide tracks[].song",
+      };
+    }
+
+    const { data, error } = buildSongData(payload, songId, userId);
+    if (error) {
+      return { error };
+    }
+    songsToCreate.push(data);
+  }
+
+  return { trackRows, songsToCreate };
 };
 
 const fetchAlbumWithTracks = async (albumId, trx) => {
@@ -160,24 +247,41 @@ export const AlbumController = {
 
       const { provided: tracksProvided, items: trackItems } =
         normalizeTracksInput(req.body);
-      const { rows: trackRows, error: trackError } = buildAlbumTrackRows(
-        trackItems,
-        albumId,
-      );
+      const {
+        trackRows,
+        songsToCreate,
+        error: trackError,
+      } = tracksProvided
+        ? await resolveAlbumTracks({
+            items: trackItems,
+            albumId,
+            userId,
+          })
+        : { trackRows: [], songsToCreate: [] };
 
       if (trackError) {
         return res.status(400).json({ error: trackError });
       }
 
-      const changes = [
-        {
-          tableName: "albums",
+      const changes = [];
+
+      for (const song of songsToCreate) {
+        changes.push({
+          tableName: "songs",
           operation: "insert",
-          targetKey: { id: albumId },
-          dataNew: albumData,
+          targetKey: { id: song.id },
+          dataNew: song,
           dataOld: null,
-        },
-      ];
+        });
+      }
+
+      changes.push({
+        tableName: "albums",
+        operation: "insert",
+        targetKey: { id: albumId },
+        dataNew: albumData,
+        dataOld: null,
+      });
 
       for (const row of trackRows) {
         changes.push({
@@ -204,6 +308,10 @@ export const AlbumController = {
       }
 
       const created = await knex.transaction(async (trx) => {
+        if (songsToCreate.length > 0) {
+          await trx("songs").insert(songsToCreate);
+        }
+
         await Album.query(trx).insert(albumData).returning("*");
 
         if (trackRows.length > 0) {
@@ -246,10 +354,17 @@ export const AlbumController = {
 
       const { provided: tracksProvided, items: trackItems } =
         normalizeTracksInput(req.body);
-      const { rows: trackRows, error: trackError } = buildAlbumTrackRows(
-        trackItems,
-        id,
-      );
+      const {
+        trackRows,
+        songsToCreate,
+        error: trackError,
+      } = tracksProvided
+        ? await resolveAlbumTracks({
+            items: trackItems,
+            albumId: id,
+            userId,
+          })
+        : { trackRows: [], songsToCreate: [] };
       const existingTracks = tracksProvided
         ? await knex("albumTracks").where({ albumId: id })
         : [];
@@ -265,6 +380,16 @@ export const AlbumController = {
       const isModerator = await moderationService.isModerator(userId);
       if (!isModerator) {
         const changes = [];
+
+        for (const song of songsToCreate) {
+          changes.push({
+            tableName: "songs",
+            operation: "insert",
+            targetKey: { id: song.id },
+            dataNew: song,
+            dataOld: null,
+          });
+        }
 
         if (Object.keys(albumData).length > 0) {
           changes.push({
@@ -317,6 +442,10 @@ export const AlbumController = {
       }
 
       const updated = await knex.transaction(async (trx) => {
+        if (songsToCreate.length > 0) {
+          await trx("songs").insert(songsToCreate);
+        }
+
         if (Object.keys(albumData).length > 0) {
           await Album.query(trx).patch(albumData).where({ id });
         }
@@ -329,6 +458,16 @@ export const AlbumController = {
         }
 
         const changes = [];
+
+        for (const song of songsToCreate) {
+          changes.push({
+            tableName: "songs",
+            operation: "insert",
+            targetKey: { id: song.id },
+            dataNew: song,
+            dataOld: null,
+          });
+        }
 
         if (Object.keys(albumData).length > 0) {
           changes.push({
