@@ -61,6 +61,16 @@ const normalizeCreatedBy = (value, fallbackId) => {
   return fallbackId;
 };
 
+const normalizeSongDefaults = (body, albumDefaults) => ({
+  releaseYear: albumDefaults?.releaseYear ?? null,
+  primaryArtistId: albumDefaults?.primaryArtistId ?? null,
+  languageCode:
+    body?.languageCode ??
+    body?.songLanguageCode ??
+    body?.defaultSongLanguageCode ??
+    null,
+});
+
 const serializeAlbum = (album) => {
   if (!album) return album;
   const data = album.toJSON ? album.toJSON() : { ...album };
@@ -89,7 +99,7 @@ const normalizeTracksInput = (body) => {
   return { provided: true, items };
 };
 
-const buildSongData = (payload, songId, userId) => {
+const buildSongData = (payload, songId, userId, defaults) => {
   if (!payload || typeof payload !== "object") {
     return { error: "tracks[].song is required to create new songs" };
   }
@@ -97,25 +107,33 @@ const buildSongData = (payload, songId, userId) => {
   const data = pickFields(payload, allowedSongCreateFields);
   data.id = songId;
   data.createdBy = normalizeCreatedBy(payload.createdBy, userId);
+  data.languageCode = data.languageCode ?? defaults?.languageCode ?? null;
+  data.releaseYear = data.releaseYear ?? defaults?.releaseYear ?? null;
 
-  if (!data.title || !data.languageCode) {
+  if (!data.title) {
+    return { error: "tracks[].title or tracks[].song.title is required" };
+  }
+
+  if (!data.languageCode) {
     return {
-      error: "tracks[].song.title and tracks[].song.languageCode are required",
+      error:
+        "tracks[].song.languageCode is required (or provide album languageCode)",
     };
   }
 
   if (data.releaseYear === undefined || data.releaseYear === null) {
     return {
-      error: "tracks[].song.releaseYear is required when creating a song",
+      error:
+        "tracks[].song.releaseYear is required (or provide album releaseYear)",
     };
   }
 
   return { data };
 };
 
-const resolveAlbumTracks = async ({ items, albumId, userId }) => {
+const resolveAlbumTracks = async ({ items, albumId, userId, defaults }) => {
   if (!items || items.length === 0) {
-    return { trackRows: [], songsToCreate: [] };
+    return { trackRows: [], songsToCreate: [], songArtistRows: [] };
   }
 
   const trackRows = [];
@@ -134,7 +152,12 @@ const resolveAlbumTracks = async ({ items, albumId, userId }) => {
     let songId = item.songId ?? songPayload?.id ?? null;
 
     if (!songId && !songPayload) {
-      return { error: "tracks[].songId or tracks[].song is required" };
+      if (!item.title && !item.songTitle) {
+        return {
+          error:
+            "tracks[].songId or tracks[].song or tracks[].title is required",
+        };
+      }
     }
 
     if (!songId) {
@@ -160,8 +183,30 @@ const resolveAlbumTracks = async ({ items, albumId, userId }) => {
     seenTracks.add(key);
 
     songIds.add(songId);
-    if (songPayload) {
-      songPayloadById.set(songId, songPayload);
+    const payload = songPayload ? { ...songPayload } : {};
+    if (!payload.title && (item.title || item.songTitle)) {
+      payload.title = item.title ?? item.songTitle;
+    }
+    if (!payload.languageCode && item.languageCode) {
+      payload.languageCode = item.languageCode;
+    }
+    if (
+      (payload.releaseYear === undefined || payload.releaseYear === null) &&
+      item.releaseYear !== undefined
+    ) {
+      payload.releaseYear = item.releaseYear;
+    }
+    if (payload.isPublished === undefined && item.isPublished !== undefined) {
+      payload.isPublished = item.isPublished;
+    }
+    if (payload.description === undefined && item.description !== undefined) {
+      payload.description = item.description;
+    }
+    if (payload.createdBy === undefined && item.createdBy !== undefined) {
+      payload.createdBy = item.createdBy;
+    }
+    if (Object.keys(payload).length > 0) {
+      songPayloadById.set(songId, payload);
     }
 
     trackRows.push({
@@ -188,18 +233,31 @@ const resolveAlbumTracks = async ({ items, albumId, userId }) => {
     const payload = songPayloadById.get(songId);
     if (!payload) {
       return {
-        error: "tracks[].songId does not exist; provide tracks[].song",
+        error:
+          "tracks[].songId does not exist; provide tracks[].song or tracks[].title",
       };
     }
 
-    const { data, error } = buildSongData(payload, songId, userId);
+    const { data, error } = buildSongData(payload, songId, userId, defaults);
     if (error) {
       return { error };
     }
     songsToCreate.push(data);
   }
 
-  return { trackRows, songsToCreate };
+  const songArtistRows = [];
+  if (defaults?.primaryArtistId) {
+    for (const song of songsToCreate) {
+      songArtistRows.push({
+        artistId: defaults.primaryArtistId,
+        songId: song.id,
+        role: "artist",
+        isPrimary: true,
+      });
+    }
+  }
+
+  return { trackRows, songsToCreate, songArtistRows };
 };
 
 const fetchAlbumWithTracks = async (albumId, trx) => {
@@ -253,17 +311,20 @@ export const AlbumController = {
 
       const { provided: tracksProvided, items: trackItems } =
         normalizeTracksInput(req.body);
+      const songDefaults = normalizeSongDefaults(req.body, albumData);
       const {
         trackRows,
         songsToCreate,
+        songArtistRows,
         error: trackError,
       } = tracksProvided
         ? await resolveAlbumTracks({
             items: trackItems,
             albumId,
             userId,
+            defaults: songDefaults,
           })
-        : { trackRows: [], songsToCreate: [] };
+        : { trackRows: [], songsToCreate: [], songArtistRows: [] };
 
       if (trackError) {
         return res.status(400).json({ error: trackError });
@@ -277,6 +338,16 @@ export const AlbumController = {
           operation: "insert",
           targetKey: { id: song.id },
           dataNew: song,
+          dataOld: null,
+        });
+      }
+
+      for (const row of songArtistRows) {
+        changes.push({
+          tableName: "songArtists",
+          operation: "insert",
+          targetKey: { artistId: row.artistId, songId: row.songId },
+          dataNew: row,
           dataOld: null,
         });
       }
@@ -316,6 +387,10 @@ export const AlbumController = {
       const created = await knex.transaction(async (trx) => {
         if (songsToCreate.length > 0) {
           await trx("songs").insert(songsToCreate);
+        }
+
+        if (songArtistRows.length > 0) {
+          await trx("songArtists").insert(songArtistRows);
         }
 
         await Album.query(trx).insert(albumData).returning("*");
@@ -360,17 +435,24 @@ export const AlbumController = {
 
       const { provided: tracksProvided, items: trackItems } =
         normalizeTracksInput(req.body);
+      const songDefaults = normalizeSongDefaults(req.body, {
+        releaseYear: albumData.releaseYear ?? existingAlbum.releaseYear ?? null,
+        primaryArtistId:
+          albumData.primaryArtistId ?? existingAlbum.primaryArtistId ?? null,
+      });
       const {
         trackRows,
         songsToCreate,
+        songArtistRows,
         error: trackError,
       } = tracksProvided
         ? await resolveAlbumTracks({
             items: trackItems,
             albumId: id,
             userId,
+            defaults: songDefaults,
           })
-        : { trackRows: [], songsToCreate: [] };
+        : { trackRows: [], songsToCreate: [], songArtistRows: [] };
       const existingTracks = tracksProvided
         ? await knex("albumTracks").where({ albumId: id })
         : [];
@@ -393,6 +475,16 @@ export const AlbumController = {
             operation: "insert",
             targetKey: { id: song.id },
             dataNew: song,
+            dataOld: null,
+          });
+        }
+
+        for (const row of songArtistRows) {
+          changes.push({
+            tableName: "songArtists",
+            operation: "insert",
+            targetKey: { artistId: row.artistId, songId: row.songId },
+            dataNew: row,
             dataOld: null,
           });
         }
@@ -452,6 +544,10 @@ export const AlbumController = {
           await trx("songs").insert(songsToCreate);
         }
 
+        if (songArtistRows.length > 0) {
+          await trx("songArtists").insert(songArtistRows);
+        }
+
         if (Object.keys(albumData).length > 0) {
           await Album.query(trx).patch(albumData).where({ id });
         }
@@ -471,6 +567,16 @@ export const AlbumController = {
             operation: "insert",
             targetKey: { id: song.id },
             dataNew: song,
+            dataOld: null,
+          });
+        }
+
+        for (const row of songArtistRows) {
+          changes.push({
+            tableName: "songArtists",
+            operation: "insert",
+            targetKey: { artistId: row.artistId, songId: row.songId },
+            dataNew: row,
             dataOld: null,
           });
         }

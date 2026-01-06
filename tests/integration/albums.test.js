@@ -42,15 +42,13 @@ describe("AlbumController", () => {
       .set("Authorization", `Bearer ${adminToken}`)
       .send({
         title: "Album With Tracks",
+        releaseYear: 1991,
+        languageCode: "kab",
         primaryArtistId: artist.id,
         tracks: [
           {
             trackNumber: 1,
-            song: {
-              title: "New Song From Album",
-              languageCode: "kab",
-              releaseYear: 1991,
-            },
+            title: "New Song From Album",
           },
         ],
       });
