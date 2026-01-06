@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { moderationService } from "../services/moderationService.js";
 import knex from "../config/knexClient.js";
 import { normalizePagination, buildPagination } from "../utils/pagination.js";
+import validator from "validator";
 
 export const makeBaseController = (
   Model,
@@ -19,6 +20,12 @@ export const makeBaseController = (
     transformUpdateData = null,
   } = {},
 ) => {
+  const uuidFields = new Set(
+    Object.entries(Model?.jsonSchema?.properties ?? {})
+      .filter(([, meta]) => meta?.format === "uuid")
+      .map(([field]) => field),
+  );
+
   const resolveDefaultOrder = () => {
     const hasUpdatedAt = Boolean(Model?.jsonSchema?.properties?.updatedAt);
     if (hasUpdatedAt) {
@@ -106,6 +113,14 @@ export const makeBaseController = (
   const applySerializer = (row, serializer) =>
     serializer ? serializer(row) : row;
 
+  const hasInvalidUuid = (whereObj) => {
+    if (!whereObj || uuidFields.size === 0) return false;
+    return Object.entries(whereObj).some(([key, value]) => {
+      if (!uuidFields.has(key)) return false;
+      return typeof value !== "string" || !validator.isUUID(value);
+    });
+  };
+
   return {
     getAll: async (req, res) => {
       try {
@@ -139,6 +154,9 @@ export const makeBaseController = (
     getById: async (req, res) => {
       try {
         const whereObj = extractId(req);
+        if (hasInvalidUuid(whereObj)) {
+          return res.status(400).json({ error: "Invalid id" });
+        }
 
         let query = Model.query().findOne(whereObj);
 
@@ -270,6 +288,9 @@ export const makeBaseController = (
         if (!ensureBodyObject(req, res)) return;
 
         const whereObj = extractId(req);
+        if (hasInvalidUuid(whereObj)) {
+          return res.status(400).json({ error: "Invalid id" });
+        }
         const data = applyTransform(
           filterBody(req.body, allowedUpdateFields),
           transformUpdateData,
@@ -356,6 +377,9 @@ export const makeBaseController = (
     remove: async (req, res) => {
       try {
         const whereObj = extractId(req);
+        if (hasInvalidUuid(whereObj)) {
+          return res.status(400).json({ error: "Invalid id" });
+        }
         const userId = req.user?.userId;
         const isModerator = userId
           ? await moderationService.isModerator(userId)

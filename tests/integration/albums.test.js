@@ -32,4 +32,30 @@ describe("AlbumController", () => {
 
     expect(res.status).toBe(400);
   });
+
+  it("creates an album with tracks and new songs", async () => {
+    const adminToken = await loginAsAdmin();
+    const artist = await getSeededArtist();
+
+    const res = await request(app)
+      .post("/api/albums")
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({
+        title: "Album With Tracks",
+        releaseYear: 1991,
+        languageCode: "kab",
+        primaryArtistId: artist.id,
+        tracks: [
+          {
+            trackNumber: 1,
+            title: "New Song From Album",
+          },
+        ],
+      });
+
+    expect(res.status).toBe(201);
+    expect(Array.isArray(res.body.tracks)).toBe(true);
+    expect(res.body.tracks.length).toBe(1);
+    expect(res.body.tracks[0].song?.title).toBe("New Song From Album");
+  });
 });
