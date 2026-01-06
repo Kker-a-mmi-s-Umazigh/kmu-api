@@ -49,6 +49,7 @@ describe("AlbumController", () => {
             song: {
               title: "New Song From Album",
               languageCode: "kab",
+              releaseYear: 1991,
             },
           },
         ],

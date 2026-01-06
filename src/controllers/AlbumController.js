@@ -104,6 +104,12 @@ const buildSongData = (payload, songId, userId) => {
     };
   }
 
+  if (data.releaseYear === undefined || data.releaseYear === null) {
+    return {
+      error: "tracks[].song.releaseYear is required when creating a song",
+    };
+  }
+
   return { data };
 };
 
